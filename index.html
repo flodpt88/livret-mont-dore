@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Le n°9 du Soleil des Thermes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@600;700&family=Caveat:wght@600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap">
+<style>
+/* Mise en page : l'univers du livret Canva de Florian (orange soleil + vert sapin, illustrations de montagne). Une colonne mobile, grandes photos pas à pas pour l'accès, cartes illustrées pour les visites. Thème unique et lumineux, choisi volontairement. */
+:root{
+  --sun:#f0a23a; --sun-deep:#d9821a; --sun-soft:#fdf0dc;
+  --pine:#3e5b3d; --pine-deep:#2a4129; --pine-soft:#e7efe3;
+  --ink:#263226; --muted:#5f6b5e; --paper:#fffdf8; --white:#ffffff; --line:#eadfcb;
+  --f-title:"Josefin Sans", "Trebuchet MS", system-ui, sans-serif;
+  --f-script:"Caveat", "Segoe Script", cursive;
+  --f-body:"Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+img{display:block;max-width:100%}
+a{color:var(--sun-deep);font-weight:700;text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:6px}
+.wrap{max-width:680px;margin:0 auto;padding-inline:18px}
+
+/* Couverture */
+.cover{position:relative;min-height:min(92vh,760px);display:grid;align-items:end;background:var(--pine-deep) url("img/hero.jpg") center 30%/cover no-repeat;color:var(--white)}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(42,65,41,0) 35%,rgba(42,65,41,.55) 70%,rgba(42,65,41,.9) 100%)}
+.cover .wrap{position:relative;z-index:1;padding-block:0 34px;width:100%}
+.badge{display:inline-block;background:var(--sun);color:var(--pine-deep);font-family:var(--f-title);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px;padding:7px 12px;border-radius:999px}
+.cover h1{font-family:var(--f-title);font-weight:700;text-transform:uppercase;font-size:clamp(34px,10vw,58px);line-height:.98;margin:14px 0 6px;text-wrap:balance;text-shadow:0 2px 18px rgba(0,0,0,.25)}
+.cover .script{font-family:var(--f-script);font-size:30px;color:var(--sun);line-height:1}
+.cover p{margin:10px 0 0;max-width:46ch;font-size:16px;opacity:.95}
+
+/* Sommaire */
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--pine);box-shadow:0 2px 10px rgba(0,0,0,.12)}
+nav.toc .wrap{display:flex;gap:6px;overflow-x:auto;white-space:nowrap;padding-block:10px;scrollbar-width:none}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{color:var(--white);text-decoration:none;font-weight:700;font-size:14px;padding:6px 12px;border-radius:999px;border:1.5px solid rgba(255,255,255,.35)}
+nav.toc a:hover{background:var(--sun);border-color:var(--sun);color:var(--pine-deep)}
+
+/* Sections */
+section{padding-block:44px 6px;scroll-margin-top:60px}
+.kicker{font-family:var(--f-script);font-size:28px;color:var(--sun-deep);line-height:1;display:block}
+h2{font-family:var(--f-title);font-weight:700;text-transform:uppercase;font-size:clamp(28px,7.5vw,38px);line-height:1.02;color:var(--pine);margin:2px 0 14px;text-wrap:balance}
+h3{font-family:var(--f-title);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:17px;color:var(--pine);margin:26px 0 8px}
+p{margin:0 0 12px}
+.lead{font-size:17px;color:var(--muted)}
+
+/* Horaires */
+.times{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-block:6px 18px}
+.time{border-radius:18px;padding:16px 18px;color:var(--white)}
+.time.in{background:var(--sun);color:var(--pine-deep)}
+.time.out{background:var(--pine)}
+.time span{font-family:var(--f-title);font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:12px}
+.time strong{display:block;font-family:var(--f-title);font-weight:700;font-size:46px;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
+.time em{font-style:normal;font-size:14px;opacity:.9}
+
+.callout{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start;background:var(--sun-soft);border-radius:16px;padding:14px 16px;margin-block:14px}
+.callout .ico{width:44px;height:44px;border-radius:50%;background:var(--sun);display:grid;place-items:center}
+.callout .ico svg{width:22px;height:22px;stroke:var(--pine-deep);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.callout p{margin:0}
+.callout.green{background:var(--pine-soft)}
+.callout.green .ico{background:var(--pine)}
+.callout.green .ico svg{stroke:var(--white)}
+
+/* Étapes photo */
+.steps{display:grid;gap:18px;margin-block:10px 8px;counter-reset:st}
+.step{background:var(--white);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 6px 20px rgba(62,91,61,.08)}
+.step figure{margin:0;position:relative}
+.step img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.step img.tall{aspect-ratio:3/4}
+.step .n{position:absolute;top:12px;left:12px;width:40px;height:40px;border-radius:50%;background:var(--sun);color:var(--pine-deep);font-family:var(--f-title);font-weight:700;font-size:20px;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.step .txt{padding:14px 16px 16px}
+.step .txt b{display:block;font-family:var(--f-title);text-transform:uppercase;letter-spacing:.03em;color:var(--pine);font-size:16px;margin-bottom:2px}
+.step .txt p{margin:0}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:420px){.pair{grid-template-columns:1fr}}
+
+.addr{background:var(--pine);color:var(--white);border-radius:20px;padding:18px;display:grid;gap:6px}
+.addr b{font-family:var(--f-title);font-size:19px;text-transform:uppercase;letter-spacing:.02em}
+.addr small{opacity:.85;font-size:14px}
+.addr a{color:var(--sun);justify-self:start;margin-top:4px}
+
+/* Listes */
+.kv{display:grid;border-top:1.5px dashed var(--line)}
+.kv div{display:grid;grid-template-columns:minmax(110px,36%) 1fr;gap:12px;padding:10px 0;border-bottom:1.5px dashed var(--line)}
+.kv dt{font-weight:800;color:var(--pine)}
+.kv dd{margin:0;min-width:0}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+
+/* Wifi */
+.wifi{background:var(--pine);color:var(--white);border-radius:24px;padding:22px 20px;display:grid;gap:16px;position:relative;overflow:hidden}
+.wifi::before{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:var(--sun);opacity:.9}
+.wifi > *{position:relative}
+.field span{display:block;font-family:var(--f-title);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px;color:var(--sun);margin-bottom:4px}
+.copyrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.copyrow code{font-family:var(--f-body);font-weight:800;font-size:18px;word-break:break-all;min-width:0;flex:1 1 200px}
+button.copy{font:inherit;font-size:14px;font-weight:800;border:0;background:var(--sun);color:var(--pine-deep);border-radius:999px;padding:8px 16px;cursor:pointer}
+button.copy:hover{background:var(--white)}
+
+/* Appartement */
+.photo-wide{border-radius:22px;overflow:hidden;margin-block:6px 18px}
+.photo-wide img{width:100%;aspect-ratio:16/10;object-fit:cover}
+.eq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:460px){.eq{grid-template-columns:1fr}}
+.eq div{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.eq h3{margin:0 0 6px;font-size:15px}
+.eq ul{margin:0;padding-left:18px}
+.eq li{margin-bottom:2px}
+
+/* Mode d'emploi */
+.tips{display:grid;gap:12px}
+.tip{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:10px}
+.tip img{width:96px;height:96px;object-fit:cover;border-radius:14px}
+.tip.noimg{grid-template-columns:1fr;padding:14px 16px}
+.tip b{display:block;font-family:var(--f-title);text-transform:uppercase;color:var(--pine);font-size:15px;letter-spacing:.03em}
+.tip p{margin:2px 0 0;font-size:15px}
+
+/* Règles */
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:520px){.rules{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rule{border-radius:18px;padding:14px;text-align:center;display:grid;gap:4px;align-content:start}
+.rule:nth-child(odd){background:var(--sun);color:var(--pine-deep)}
+.rule:nth-child(even){background:var(--pine);color:var(--white)}
+.rule b{font-family:var(--f-title);text-transform:uppercase;font-size:15px}
+.rule span{font-size:14px;line-height:1.35}
+
+/* Départ */
+ul.check{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}
+ul.check li{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start}
+ul.check li::before{content:"";width:22px;height:22px;border-radius:7px;border:2.5px solid var(--sun);background:var(--white)}
+
+/* Visites */
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:460px){.cards{grid-template-columns:1fr}}
+.card{background:var(--white);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.card img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.card div{padding:12px 14px 14px}
+.card b{display:block;font-family:var(--f-title);text-transform:uppercase;color:var(--pine);font-size:15px;letter-spacing:.02em}
+.card p{margin:4px 0 0;font-size:14.5px;color:var(--muted)}
+.band{margin-block:28px 0;border-radius:24px;overflow:hidden;position:relative;color:var(--white)}
+.band img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.band p{position:absolute;inset:auto 0 0 0;margin:0;padding:40px 18px 16px;background:linear-gradient(180deg,rgba(42,65,41,0),rgba(42,65,41,.9));font-weight:700}
+
+/* Contact */
+.contact{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center;background:var(--sun);color:var(--pine-deep);border-radius:24px;padding:18px}
+@media (max-width:420px){.contact{grid-template-columns:1fr}}
+.contact img{width:120px;height:120px;border-radius:50%;object-fit:cover;object-position:center 60%;border:4px solid var(--white)}
+.contact h2{color:var(--pine-deep);margin-bottom:6px}
+.contact p{margin:0 0 8px}
+.contact button.copy{background:var(--pine);color:var(--white)}
+.contact .copyrow code{font-size:20px}
+footer{padding-block:34px 40px;text-align:center}
+footer .script{font-family:var(--f-script);font-size:30px;color:var(--sun-deep)}
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <div class="wrap">
+    <span class="badge">Livret d'accueil</span>
+    <h1>Le n°9 du Soleil des Thermes</h1>
+    <span class="script">Bienvenue au Mont-Dore !</span>
+    <p>Je suis ravi de vous accueillir. Tout ce qu'il faut pour votre séjour est ici : comment entrer, l'appartement, le départ et mes bonnes adresses.</p>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Sommaire"><div class="wrap">
+  <a href="#arrivee">Arrivée</a><a href="#cles">Boîte à clés</a><a href="#wifi">Wifi</a><a href="#logement">Logement</a><a href="#conseils">Mode d'emploi</a><a href="#regles">Règles</a><a href="#depart">Départ</a><a href="#visiter">À voir</a><a href="#pratique">Pratique</a><a href="#contact">Contact</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="arrivee">
+  <span class="kicker">Se rendre à</span>
+  <h2>L'appartement</h2>
+  <div class="times">
+    <div class="time in"><span>Votre arrivée</span><strong>16h</strong><em>à partir de</em></div>
+    <div class="time out"><span>Votre départ</span><strong>12h</strong><em>au plus tard</em></div>
+  </div>
+  <div class="addr">
+    <b>6 rue des Chevreuils</b>
+    <span>63240 Le Mont-Dore</span>
+    <small>Résidence Soleil des Thermes · appartement n°9 · 4ᵉ et dernier étage</small>
+    <a href="https://www.google.com/maps/search/?api=1&query=6+rue+des+Chevreuils+63240+Le+Mont-Dore">Ouvrir dans Google Maps →</a>
+  </div>
+  <div class="callout">
+    <div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <p><b>Arrivée autonome.</b> Les codes de l'immeuble et de la boîte à clés vous sont envoyés <b>le jour J vers 15h45</b> sur la messagerie Airbnb.</p>
+  </div>
+
+  <h3>Trouver l'entrée</h3>
+  <div class="steps">
+    <div class="step"><figure><img src="img/rue.jpg" alt="La rue des Chevreuils, avec l'immeuble à droite" loading="lazy"><span class="n">1</span></figure>
+      <div class="txt"><b>La rue des Chevreuils</b><p>Depuis la rue Meynadier, marchez vers la place, puis prenez la rue des Chevreuils.</p></div></div>
+    <div class="step"><figure><img class="tall" src="img/porte.jpg" alt="La porte d'entrée de l'immeuble, discrète et en retrait" loading="lazy"><span class="n">2</span></figure>
+      <div class="txt"><b>La porte de l'immeuble</b><p>Sur la gauche, juste après l'angle du bâtiment : une porte discrète, en retrait. Entrez avec le code de l'immeuble.</p></div></div>
+    <div class="step"><figure><img src="img/telepherique.jpg" alt="Illustration" loading="lazy" style="aspect-ratio:16/7"><span class="n">3</span></figure>
+      <div class="txt"><b>Montez au 4ᵉ</b><p>L'ascenseur va jusqu'au 3ᵉ étage, puis il reste un étage à pied.</p></div></div>
+  </div>
+</section>
+
+<section id="cles">
+  <span class="kicker">Mais où se trouve</span>
+  <h2>La boîte à clés ?</h2>
+  <p class="lead">Elle est sur le palier, juste en face de la porte de l'appartement.</p>
+  <div class="steps">
+    <div class="pair">
+      <div class="step"><figure><img class="tall" src="img/cle1.jpg" alt="Le couloir du 4e étage" loading="lazy"><span class="n">1</span></figure>
+        <div class="txt"><b>Le palier du 4ᵉ</b><p>Arrivé en haut, avancez sur le palier.</p></div></div>
+      <div class="step"><figure><img class="tall" src="img/cle2.jpg" alt="Le palier et la porte de l'appartement" loading="lazy"><span class="n">2</span></figure>
+        <div class="txt"><b>Face à la porte n°9</b><p>Tournez le dos à la porte de l'appartement.</p></div></div>
+      <div class="step"><figure><img class="tall" src="img/cle3.jpg" alt="Le petit local près de la fenêtre" loading="lazy"><span class="n">3</span></figure>
+        <div class="txt"><b>Le petit local</b><p>Au fond à droite, près de la fenêtre.</p></div></div>
+      <div class="step"><figure><img class="tall" src="img/cle4.jpg" alt="L'intérieur du local, la boîte à clés est à gauche" loading="lazy"><span class="n">4</span></figure>
+        <div class="txt"><b>La boîte à clés</b><p>Sur la gauche du local. Entrez le code, puis appuyez sur les deux boutons latéraux.</p></div></div>
+    </div>
+  </div>
+  <p style="margin-top:14px">Un petit message une fois installés me fait toujours plaisir 😊</p>
+
+  <h3>Se garer</h3>
+  <p>Il y a des places tout autour de l'immeuble et quelques parkings gratuits en ville.</p>
+  <div class="kv">
+    <div><dt>Zone payante</dt><dd>Hypercentre : place Charles-de-Gaulle, rue Meynadier, square Marcel-Bony, place de la République, parking derrière le Casino</dd></div>
+    <div><dt>Quand</dt><dd>Du 1er mai au 31 octobre, lundi–samedi, 9h–12h et 14h–18h</dd></div>
+    <div><dt>Tarifs</dt><dd><span class="num">0,90 €</span>/h · <span class="num">15 €</span>/semaine · <span class="num">35 €</span>/3 semaines · 20 min gratuites</dd></div>
+    <div><dt>Gratuit</dt><dd>Dimanches, jours fériés, et de novembre à avril</dd></div>
+  </div>
+  <div class="callout green">
+    <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2v20M4.9 4.9l14.2 14.2M2 12h20M4.9 19.1L19.1 4.9"/></svg></div>
+    <p><b>Neige ?</b> Une pelle est à votre disposition. Si la voiture patine : dégagez les roues, coupez l'antipatinage, accélérez doucement en 2ᵉ.</p>
+  </div>
+</section>
+
+<section id="wifi">
+  <span class="kicker">Connexion</span>
+  <h2>Wifi</h2>
+  <div class="wifi">
+    <div class="field"><span>Réseau</span><div class="copyrow"><code id="ssid">Livebox Soleil Des Thermes 9</code><button class="copy" data-copy="ssid" type="button">Copier</button></div></div>
+    <div class="field"><span>Mot de passe</span><div class="copyrow"><code id="pwd">bonjoursoleildesthermes9</code><button class="copy" data-copy="pwd" type="button">Copier</button></div></div>
+  </div>
+</section>
+
+<section id="logement">
+  <span class="kicker">Bienvenue dans</span>
+  <h2>Votre cocon</h2>
+  <div class="photo-wide"><img src="img/appart.jpg" alt="Le salon et le coin cuisine de l'appartement" loading="lazy"></div>
+  <p>28 m² au dernier étage, personne au-dessus : le calme est garanti.</p>
+  <div class="eq">
+    <div><h3>Cuisine</h3><ul><li>Plaques 2 feux, micro-ondes, petit four</li><li>Frigo</li><li>Cafetière filtre et Tassimo</li><li>Bouilloire, grille-pain</li><li>Vaisselle complète, verres à vin</li></ul></div>
+    <div><h3>Salon</h3><ul><li>Table extensible (2 à 4 pers.)</li><li>Canapé convertible 140×190</li><li>TV avec box Orange</li><li>Lave-linge</li></ul></div>
+    <div><h3>Chambre</h3><ul><li>Lit double 140×190</li><li>Draps, alèses, oreillers</li><li>Placards, fauteuil</li><li>Lit parapluie</li></ul></div>
+    <div><h3>Salle de bain</h3><ul><li>Douche, lavabo, WC</li><li>Sèche-serviettes</li><li>Sèche-cheveux</li><li>Réducteur de toilette</li></ul></div>
+  </div>
+  <div class="callout">
+    <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h12"/></svg></div>
+    <p><b>Draps fournis</b>, le lit est à faire à l'arrivée. <b>Serviettes non fournies</b> : pensez à les apporter, avec des torchons. Aspirateur, serpillière et produits ménagers sont dans un placard de la chambre.</p>
+  </div>
+</section>
+
+<section id="conseils">
+  <span class="kicker">Quelques conseils</span>
+  <h2>Mode d'emploi</h2>
+  <div class="tips">
+    <div class="tip"><img src="img/radiateur.jpg" alt="" loading="lazy"><div><b>Chauffage</b><p>Le thermostat central ne marche pas : réglez chaque radiateur directement sur l'appareil.</p></div></div>
+    <div class="tip"><img src="img/tassimo.jpg" alt="" loading="lazy"><div><b>Cafetière Tassimo</b><p>Eau, disque dans la tête, bouton. Si elle refuse, nettoyez le lecteur de code-barres. <a href="https://www.youtube.com/watch?v=LZRRM8JU5X8">Tuto</a></p></div></div>
+    <div class="tip"><img src="img/canape.jpg" alt="" loading="lazy"><div><b>Canapé convertible</b><p>Tirez l'assise, prenez couette et oreillers, rabattez le dossier. <a href="https://www.youtube.com/watch?v=Q2ewuy-7Mko">Tuto</a></p></div></div>
+    <div class="tip"><img src="img/table.jpg" alt="" loading="lazy"><div><b>Table</b><p>Décollez-la du mur, dépliez le rabat. Chaises en plus dans le placard de la chambre. <a href="https://www.youtube.com/watch?v=sarwe6HO8J8">Tuto</a></p></div></div>
+    <div class="tip noimg"><div><b>Télévision</b><p>Allumez la TV (petite télécommande Samsung), puis la box (grande télécommande Orange, un peu lente). Changez de chaîne uniquement avec la télécommande Orange.</p></div></div>
+    <div class="tip"><img src="img/lavelinge.jpg" alt="" loading="lazy"><div><b>Lave-linge</b><p>Une petite machine est à votre disposition.</p></div></div>
+    <div class="tip"><img src="img/douche.jpg" alt="" loading="lazy"><div><b>Douche</b><p>L'écoulement est un peu lent depuis toujours : c'est normal.</p></div></div>
+    <div class="tip"><img src="img/poubelles.jpg" alt="" loading="lazy"><div><b>Poubelles</b><p>Pas de local dans l'immeuble : containers en ville. <a href="https://mairie-montdore.fr/fr/rb/101883/collecte-des-dechets-8">Carte des points</a></p></div></div>
+  </div>
+</section>
+
+<section id="regles">
+  <span class="kicker">Quelques</span>
+  <h2>Règles</h2>
+  <div class="rules">
+    <div class="rule"><b>Respect</b><span>Prenez soin de l'appartement.</span></div>
+    <div class="rule"><b>Animaux</b><span>Je les adore, mais ils ne sont pas acceptés.</span></div>
+    <div class="rule"><b>Non-fumeur</b><span>Merci de ne pas fumer à l'intérieur.</span></div>
+    <div class="rule"><b>Calme</b><span>Pas de fête, peu de bruit après 22h.</span></div>
+    <div class="rule"><b>Voyageurs</b><span>Personne en plus sans me prévenir.</span></div>
+    <div class="rule"><b>Sécurité</b><span>Pas d'appareil électrique dangereux.</span></div>
+  </div>
+</section>
+
+<section id="depart">
+  <span class="kicker">Avant de partir…</span>
+  <h2>Le départ</h2>
+  <p class="lead">Avant 12h, en toute autonomie. Comptez 20 à 30 minutes de ménage.</p>
+  <ul class="check">
+    <li>Vaisselle lavée et rangée</li>
+    <li>Poubelles déposées dans les containers</li>
+    <li>Frigo et placards vidés</li>
+    <li>Draps retirés et laissés au pied du lit</li>
+    <li>Table, plan de travail et évier essuyés</li>
+    <li>Sol balayé (serpillière si besoin)</li>
+    <li>Douche et lavabo rincés</li>
+    <li>Fenêtres fermées, chauffage baissé</li>
+    <li>Clés remises dans la boîte à clés</li>
+  </ul>
+  <p>Merci, ça fait vraiment la différence pour les voyageurs suivants 🙏 Et si vous avez deux minutes, un petit avis sur Airbnb me ferait très plaisir.</p>
+</section>
+
+<section id="visiter">
+  <span class="kicker">À faire, à voir</span>
+  <h2>Visites</h2>
+  <p class="lead">Tout part à pied du village. Les pistes sont à 2 km, avec des navettes gratuites toute la journée (appli Zenbus).</p>
+  <div class="cards">
+    <div class="card"><img src="img/sancy.jpg" alt="Le sommet du Puy de Sancy au coucher du soleil" loading="lazy"><div><b>Le Puy de Sancy</b><p>Téléphérique depuis le Mont-Dore, puis 15–20 min à pied jusqu'au sommet à 1 886 m.</p></div></div>
+    <div class="card"><img src="img/funi.jpg" alt="Le funiculaire du Capucin" loading="lazy"><div><b>Le funiculaire du Capucin</b><p>Jusqu'au Salon du Capucin à 1 300 m : vue sur la vallée et départ de randonnées.</p></div></div>
+    <div class="card"><img src="img/cascade.jpg" alt="La Grande Cascade" loading="lazy"><div><b>La Grande Cascade</b><p>Une rando simple et très agréable depuis la ville, même pour les petites jambes.</p></div></div>
+    <div class="card"><img src="img/ski.jpg" alt="La station de ski du Sancy" loading="lazy"><div><b>La station du Sancy</b><p>Ski, fond, raquettes et chiens de traîneau l'hiver ; VTT et trail l'été.</p></div></div>
+    <div class="card"><img src="img/thermes.jpg" alt="Le hall des Thermes" loading="lazy"><div><b>Les Thermes</b><p>Un édifice néo-byzantin superbe : mosaïques, fresques, eaux volcaniques.</p></div></div>
+    <div class="card"><img src="img/lac.jpg" alt="Un lac volcanique entouré de forêt" loading="lazy"><div><b>Les lacs</b><p>Chambon (plage, paddle), Guéry (sauvage, à 1 200 m) et Pavin, à quelques minutes.</p></div></div>
+    <div class="card"><img src="img/murol.jpg" alt="Le château de Murol" loading="lazy"><div><b>Le château de Murol</b><p>Château médiéval qui domine la vallée, animations en saison.</p></div></div>
+    <div class="card"><img src="img/cascade-illu.jpg" alt="Illustration d'une cascade" loading="lazy" style="object-position:center 40%"><div><b>Randonnées</b><p>Applis Sancy Explorer et <a href="https://www.visorando.com">Visorando</a>, et le <a href="https://www.facebook.com/groups/410291064059895">groupe Facebook</a> des voyageurs.</p></div></div>
+  </div>
+  <h3>Mes restaurants préférés</h3>
+  <p>Réservez quelques jours avant. En novembre, beaucoup ferment.</p>
+  <div class="kv">
+    <div><dt>L'Estavou</dt><dd class="num">04 73 65 01 97</dd></div>
+    <div><dt>Chez Pépé Jean</dt><dd class="num">04 73 22 16 44</dd></div>
+    <div><dt>Les Fées Mères</dt><dd class="num">04 73 21 52 33</dd></div>
+    <div><dt>Auberge de la Golmotte</dt><dd class="num">04 73 65 05 77</dd></div>
+    <div><dt>La Ferme de l'Angle</dt><dd class="num">04 73 65 02 11</dd></div>
+  </div>
+  <div class="band"><img src="img/lac-illu.jpg" alt="Illustration du lac Pavin" loading="lazy"><p>Le lac Pavin, à 25 minutes : le plus beau lac volcanique d'Auvergne.</p></div>
+</section>
+
+<section id="pratique">
+  <span class="kicker">Bon à savoir</span>
+  <h2>Infos pratiques</h2>
+  <h3>Courses</h3>
+  <div class="kv">
+    <div><dt>Supermarchés</dt><dd>Petit Casino (place du Marché) · SPAR (rue du Capitaine-Chazotte) · CocciMarket (av. de la Gare)</dd></div>
+    <div><dt>Boulangerie</dt><dd>Le Moulin de l'Écureuil, 3 place du Panthéon</dd></div>
+    <div><dt>Fromageries</dt><dd>Fromagerie du Bougnat (4 rue Montlosier) · Subirana (19 rue des Déportés) · Renommée du Bon Saint-Nectaire (3 rue M.-Sauvagnat)</dd></div>
+    <div><dt>Boucheries</dt><dd>Boucherie du Mont-Dore (9 pl. de la République) · Boucherie du Sancy (6 rue Favart)</dd></div>
+    <div><dt>Carburant</dt><dd>Auchan La Bourboule · Intermarché Murat-le-Quaire</dd></div>
+  </div>
+  <h3>Santé et services</h3>
+  <div class="kv">
+    <div><dt>Pharmacie</dt><dd>1 place Charles-de-Gaulle · <span class="num">04 73 65 02 86</span></dd></div>
+    <div><dt>Médecin</dt><dd>Dr Vigier, 4 rue Rigny · <span class="num">04 73 65 08 72</span></dd></div>
+    <div><dt>Hôpital</dt><dd>2 rue du Capitaine-Chazotte · <span class="num">04 73 65 33 33</span></dd></div>
+    <div><dt>Office de tourisme</dt><dd>Av. de la Libération · <span class="num">04 73 65 20 21</span> · <a href="https://www.sancy.com">sancy.com</a></dd></div>
+    <div><dt>Urgences</dt><dd>SAMU <span class="num">15</span> · Pompiers <span class="num">18</span> · Police <span class="num">17</span> · Antipoison <span class="num">04 72 11 69 11</span></dd></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact">
+    <img src="img/florian.jpg" alt="Florian, votre hôte">
+    <div>
+      <span class="kicker" style="color:var(--pine-deep)">Une question ?</span>
+      <h2>Je suis là</h2>
+      <p>Écrivez-moi sur la messagerie Airbnb ou par SMS :</p>
+      <div class="copyrow"><code id="tel">06 44 23 37 30</code><button class="copy" data-copy="tel" type="button">Copier</button></div>
+      <p style="margin-top:10px;font-size:14px">Urgence et je ne réponds pas : Sylvie, qui s'occupe de l'appartement, au <span class="num">06 11 88 05 30</span>.</p>
+    </div>
+  </div>
+</section>
+
+<footer><div class="script">Bon séjour au Mont-Dore !</div><div>Florian</div></footer>
+</main>
+
+<script>
+document.querySelectorAll('button.copy').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var el=document.getElementById(btn.dataset.copy); var txt=el.textContent.trim();
+    var reset=function(t){btn.textContent=t;setTimeout(function(){btn.textContent='Copier'},1600)};
+    var fallback=function(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);reset('Sélectionné')};
+    try{navigator.clipboard.writeText(txt).then(function(){reset('Copié')},fallback)}catch(e){fallback()}
+  });
+});
+</script>
+</body>
+</html>
