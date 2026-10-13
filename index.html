@@ -8,15 +8,28 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@600;700&family=Caveat:wght@600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap">
+<script>
+/* Langue et saison choisies avant l'affichage, pour éviter un clignotement */
+(function(){
+  var d=document.documentElement, lang, season;
+  try{lang=localStorage.getItem('lang')}catch(e){}
+  if(location.hash==='#en')lang='en'; if(location.hash==='#fr')lang='fr';
+  if(!lang)lang=(navigator.language||'fr').toLowerCase().indexOf('fr')===0?'fr':'en';
+  try{season=localStorage.getItem('season')}catch(e){}
+  if(!season){var m=new Date().getMonth()+1; season=(m>=12||m<=3)?'hiver':'ete';}
+  d.classList.add('lang-'+lang,'season-'+season); d.lang=lang;
+})();
+</script>
 <style>
-/* Mise en page : l'univers du livret Canva de Florian (orange soleil + vert sapin, illustrations de montagne). Une colonne mobile, grandes photos pas à pas pour l'accès, cartes illustrées pour les visites. Thème unique et lumineux, choisi volontairement. */
+/* Univers du livret Canva de Florian : orange soleil + vert sapin, illustrations de montagne. Une colonne mobile. Bilingue FR/EN, contenu saisonnier hiver / belle saison. Thème unique et lumineux, choisi volontairement. */
 :root{
-  --sun:#f0a23a; --sun-deep:#d9821a; --sun-soft:#fdf0dc;
+  --sun:#f0a23a; --sun-deep:#c46f0c; --sun-soft:#fdf0dc;
   --pine:#3e5b3d; --pine-deep:#2a4129; --pine-soft:#e7efe3;
+  --snow:#e8f1f7; --snow-ink:#2c4a63;
   --ink:#263226; --muted:#5f6b5e; --paper:#fffdf8; --white:#ffffff; --line:#eadfcb;
-  --f-title:"Josefin Sans", "Trebuchet MS", system-ui, sans-serif;
-  --f-script:"Caveat", "Segoe Script", cursive;
-  --f-body:"Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-title:"Josefin Sans","Trebuchet MS",system-ui,sans-serif;
+  --f-script:"Caveat","Segoe Script",cursive;
+  --f-body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -25,17 +38,26 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
 img{display:block;max-width:100%}
 a{color:var(--sun-deep);font-weight:700;text-underline-offset:3px}
-a:focus-visible,button:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:6px}
+a:focus-visible,button:focus-visible,input:focus-visible+span{outline:3px solid var(--sun);outline-offset:2px;border-radius:6px}
 .wrap{max-width:680px;margin:0 auto;padding-inline:18px}
 
+/* Langues & saisons */
+html:not(.lang-en) .en{display:none!important}
+html.lang-en .fr{display:none!important}
+html:not(.season-hiver) .s-hiver{display:none!important}
+html:not(.season-ete) .s-ete{display:none!important}
+
 /* Couverture */
-.cover{position:relative;min-height:min(92vh,760px);display:grid;align-items:end;background:var(--pine-deep) url("img/hero.jpg") center 30%/cover no-repeat;color:var(--white)}
-.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(42,65,41,0) 35%,rgba(42,65,41,.55) 70%,rgba(42,65,41,.9) 100%)}
-.cover .wrap{position:relative;z-index:1;padding-block:0 34px;width:100%}
+.cover{position:relative;min-height:min(88vh,740px);display:grid;align-items:end;background:var(--pine-deep) url("img/hero.jpg") center 30%/cover no-repeat;color:var(--white)}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(42,65,41,0) 35%,rgba(42,65,41,.55) 70%,rgba(42,65,41,.92) 100%)}
+.cover .wrap{position:relative;z-index:1;padding-block:0 30px;width:100%}
+.langs{position:absolute;z-index:2;top:calc(env(safe-area-inset-top,0px) + 14px);right:14px;display:flex;background:rgba(42,65,41,.55);border-radius:999px;padding:3px;backdrop-filter:blur(4px)}
+.langs button{font:inherit;font-weight:800;font-size:13px;border:0;background:transparent;color:var(--white);padding:6px 12px;border-radius:999px;cursor:pointer}
+html.lang-fr .langs [data-lang=fr],html.lang-en .langs [data-lang=en]{background:var(--sun);color:var(--pine-deep)}
 .badge{display:inline-block;background:var(--sun);color:var(--pine-deep);font-family:var(--f-title);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px;padding:7px 12px;border-radius:999px}
 .cover h1{font-family:var(--f-title);font-weight:700;text-transform:uppercase;font-size:clamp(34px,10vw,58px);line-height:.98;margin:14px 0 6px;text-wrap:balance;text-shadow:0 2px 18px rgba(0,0,0,.25)}
 .cover .script{font-family:var(--f-script);font-size:30px;color:var(--sun);line-height:1}
-.cover p{margin:10px 0 0;max-width:46ch;font-size:16px;opacity:.95}
+.cover p{margin:10px 0 0;max-width:46ch;opacity:.95}
 
 /* Sommaire */
 nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--pine);box-shadow:0 2px 10px rgba(0,0,0,.12)}
@@ -44,7 +66,6 @@ nav.toc .wrap::-webkit-scrollbar{display:none}
 nav.toc a{color:var(--white);text-decoration:none;font-weight:700;font-size:14px;padding:6px 12px;border-radius:999px;border:1.5px solid rgba(255,255,255,.35)}
 nav.toc a:hover{background:var(--sun);border-color:var(--sun);color:var(--pine-deep)}
 
-/* Sections */
 section{padding-block:44px 6px;scroll-margin-top:60px}
 .kicker{font-family:var(--f-script);font-size:28px;color:var(--sun-deep);line-height:1;display:block}
 h2{font-family:var(--f-title);font-weight:700;text-transform:uppercase;font-size:clamp(28px,7.5vw,38px);line-height:1.02;color:var(--pine);margin:2px 0 14px;text-wrap:balance}
@@ -52,7 +73,6 @@ h3{font-family:var(--f-title);font-weight:700;text-transform:uppercase;letter-sp
 p{margin:0 0 12px}
 .lead{font-size:17px;color:var(--muted)}
 
-/* Horaires */
 .times{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-block:6px 18px}
 .time{border-radius:18px;padding:16px 18px;color:var(--white)}
 .time.in{background:var(--sun);color:var(--pine-deep)}
@@ -65,12 +85,16 @@ p{margin:0 0 12px}
 .callout .ico{width:44px;height:44px;border-radius:50%;background:var(--sun);display:grid;place-items:center}
 .callout .ico svg{width:22px;height:22px;stroke:var(--pine-deep);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .callout p{margin:0}
-.callout.green{background:var(--pine-soft)}
-.callout.green .ico{background:var(--pine)}
-.callout.green .ico svg{stroke:var(--white)}
+.callout.green{background:var(--pine-soft)} .callout.green .ico{background:var(--pine)} .callout.green .ico svg{stroke:var(--white)}
+.callout.snow{background:var(--snow)} .callout.snow .ico{background:var(--snow-ink)} .callout.snow .ico svg{stroke:var(--white)}
 
-/* Étapes photo */
-.steps{display:grid;gap:18px;margin-block:10px 8px;counter-reset:st}
+/* Boutons itinéraire */
+a.go{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:800;text-decoration:none;background:var(--pine);color:var(--white);padding:7px 13px 7px 11px;border-radius:999px;white-space:nowrap}
+a.go svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+a.go:hover{background:var(--sun);color:var(--pine-deep)}
+a.go.light{background:var(--sun);color:var(--pine-deep)}
+
+.steps{display:grid;gap:18px;margin-block:10px 8px}
 .step{background:var(--white);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 6px 20px rgba(62,91,61,.08)}
 .step figure{margin:0;position:relative}
 .step img{width:100%;aspect-ratio:4/3;object-fit:cover}
@@ -85,16 +109,14 @@ p{margin:0 0 12px}
 .addr{background:var(--pine);color:var(--white);border-radius:20px;padding:18px;display:grid;gap:6px}
 .addr b{font-family:var(--f-title);font-size:19px;text-transform:uppercase;letter-spacing:.02em}
 .addr small{opacity:.85;font-size:14px}
-.addr a{color:var(--sun);justify-self:start;margin-top:4px}
+.addr .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 
-/* Listes */
 .kv{display:grid;border-top:1.5px dashed var(--line)}
-.kv div{display:grid;grid-template-columns:minmax(110px,36%) 1fr;gap:12px;padding:10px 0;border-bottom:1.5px dashed var(--line)}
+.kv > div{display:grid;grid-template-columns:minmax(110px,36%) 1fr;gap:12px;padding:10px 0;border-bottom:1.5px dashed var(--line)}
 .kv dt{font-weight:800;color:var(--pine)}
 .kv dd{margin:0;min-width:0}
 .num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
 
-/* Wifi */
 .wifi{background:var(--pine);color:var(--white);border-radius:24px;padding:22px 20px;display:grid;gap:16px;position:relative;overflow:hidden}
 .wifi::before{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:var(--sun);opacity:.9}
 .wifi > *{position:relative}
@@ -104,17 +126,14 @@ p{margin:0 0 12px}
 button.copy{font:inherit;font-size:14px;font-weight:800;border:0;background:var(--sun);color:var(--pine-deep);border-radius:999px;padding:8px 16px;cursor:pointer}
 button.copy:hover{background:var(--white)}
 
-/* Appartement */
 .photo-wide{border-radius:22px;overflow:hidden;margin-block:6px 18px}
 .photo-wide img{width:100%;aspect-ratio:16/10;object-fit:cover}
 .eq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 @media (max-width:460px){.eq{grid-template-columns:1fr}}
-.eq div{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.eq > div{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
 .eq h3{margin:0 0 6px;font-size:15px}
 .eq ul{margin:0;padding-left:18px}
-.eq li{margin-bottom:2px}
 
-/* Mode d'emploi */
 .tips{display:grid;gap:12px}
 .tip{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:10px}
 .tip img{width:96px;height:96px;object-fit:cover;border-radius:14px}
@@ -122,7 +141,6 @@ button.copy:hover{background:var(--white)}
 .tip b{display:block;font-family:var(--f-title);text-transform:uppercase;color:var(--pine);font-size:15px;letter-spacing:.03em}
 .tip p{margin:2px 0 0;font-size:15px}
 
-/* Règles */
 .rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 @media (max-width:520px){.rules{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .rule{border-radius:18px;padding:14px;text-align:center;display:grid;gap:4px;align-content:start}
@@ -131,24 +149,63 @@ button.copy:hover{background:var(--white)}
 .rule b{font-family:var(--f-title);text-transform:uppercase;font-size:15px}
 .rule span{font-size:14px;line-height:1.35}
 
-/* Départ */
-ul.check{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}
-ul.check li{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start}
-ul.check li::before{content:"";width:22px;height:22px;border-radius:7px;border:2.5px solid var(--sun);background:var(--white)}
+/* Check-list de départ */
+.checklist{list-style:none;padding:0;margin:8px 0 10px;display:grid;gap:8px}
+.checklist label{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer}
+.checklist input{position:absolute;opacity:0;width:1px;height:1px}
+.checklist .box{width:26px;height:26px;border-radius:8px;border:2.5px solid var(--sun);display:grid;place-items:center;background:var(--white)}
+.checklist .box svg{width:16px;height:16px;stroke:var(--white);fill:none;stroke-width:3;opacity:0}
+.checklist input:checked + .box{background:var(--pine);border-color:var(--pine)}
+.checklist input:checked + .box svg{opacity:1}
+.checklist input:checked ~ .lbl{color:var(--muted);text-decoration:line-through}
+.progress{display:flex;align-items:center;gap:12px;margin-block:4px 6px}
+.bar{flex:1;height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--pine);transition:width .25s}
+.progress b{font-variant-numeric:tabular-nums;color:var(--pine);min-width:3.5em;text-align:right}
+.done{display:none;background:var(--pine);color:var(--white);border-radius:16px;padding:14px 16px;font-weight:700}
+.done.show{display:block}
+button.reset{font:inherit;font-size:13px;border:0;background:transparent;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0}
 
-/* Visites */
+/* Saisons */
+.seasons{display:flex;gap:8px;margin-block:4px 18px}
+.seasons button{flex:1;font:inherit;font-family:var(--f-title);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:15px;border:2px solid var(--pine);background:var(--white);color:var(--pine);border-radius:16px;padding:12px 10px;cursor:pointer}
+html.season-hiver .seasons [data-season=hiver]{background:var(--snow-ink);border-color:var(--snow-ink);color:var(--white)}
+html.season-ete .seasons [data-season=ete]{background:var(--pine);color:var(--white)}
+
 .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:460px){.cards{grid-template-columns:1fr}}
-.card{background:var(--white);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.card{background:var(--white);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
 .card img{width:100%;aspect-ratio:3/2;object-fit:cover}
-.card div{padding:12px 14px 14px}
-.card b{display:block;font-family:var(--f-title);text-transform:uppercase;color:var(--pine);font-size:15px;letter-spacing:.02em}
-.card p{margin:4px 0 0;font-size:14.5px;color:var(--muted)}
+.card > div{padding:12px 14px 14px;display:grid;gap:8px;flex:1;align-content:start}
+.card b{font-family:var(--f-title);text-transform:uppercase;color:var(--pine);font-size:15px;letter-spacing:.02em}
+.card p{margin:0;font-size:14.5px;color:var(--muted)}
+.card .go{justify-self:start;margin-top:auto}
+
+/* En direct */
+.live{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:420px){.live{grid-template-columns:1fr}}
+.live a{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;text-decoration:none;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:12px;color:var(--ink)}
+.live a:hover{border-color:var(--sun)}
+.live .i{width:40px;height:40px;border-radius:12px;background:var(--sun-soft);display:grid;place-items:center}
+.live .i svg{width:22px;height:22px;stroke:var(--sun-deep);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.live b{display:block;color:var(--pine);font-size:15px}
+.live small{color:var(--muted);font-weight:600;font-size:13px}
+
+/* Restaurants */
+.restos{display:grid;gap:12px}
+.resto{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:grid;gap:6px}
+.resto .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.resto b{font-family:var(--f-title);text-transform:uppercase;color:var(--pine);font-size:16px}
+.resto .where{font-size:13px;color:var(--muted);font-weight:700}
+.resto p{margin:0;font-size:14.5px}
+.resto .closed{font-size:14px;color:var(--sun-deep);font-weight:800}
+.resto .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:2px}
+.resto .tel{font-weight:800;font-variant-numeric:tabular-nums}
+
 .band{margin-block:28px 0;border-radius:24px;overflow:hidden;position:relative;color:var(--white)}
 .band img{width:100%;aspect-ratio:16/9;object-fit:cover}
 .band p{position:absolute;inset:auto 0 0 0;margin:0;padding:40px 18px 16px;background:linear-gradient(180deg,rgba(42,65,41,0),rgba(42,65,41,.9));font-weight:700}
 
-/* Contact */
 .contact{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center;background:var(--sun);color:var(--pine-deep);border-radius:24px;padding:18px}
 @media (max-width:420px){.contact{grid-template-columns:1fr}}
 .contact img{width:120px;height:120px;border-radius:50%;object-fit:cover;object-position:center 60%;border:4px solid var(--white)}
@@ -158,230 +215,366 @@ ul.check li::before{content:"";width:22px;height:22px;border-radius:7px;border:2
 .contact .copyrow code{font-size:20px}
 footer{padding-block:34px 40px;text-align:center}
 footer .script{font-family:var(--f-script);font-size:30px;color:var(--sun-deep)}
+.note-small{font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="tick" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+</svg>
+
 <header class="cover">
+  <div class="langs" role="group" aria-label="Langue / Language">
+    <button type="button" data-lang="fr" aria-label="Français">FR</button>
+    <button type="button" data-lang="en" aria-label="English">EN</button>
+  </div>
   <div class="wrap">
-    <span class="badge">Livret d'accueil</span>
+    <span class="badge"><span class="fr">Livret d'accueil</span><span class="en">Welcome guide</span></span>
     <h1>Le n°9 du Soleil des Thermes</h1>
-    <span class="script">Bienvenue au Mont-Dore !</span>
-    <p>Je suis ravi de vous accueillir. Tout ce qu'il faut pour votre séjour est ici : comment entrer, l'appartement, le départ et mes bonnes adresses.</p>
+    <span class="script"><span class="fr">Bienvenue au Mont-Dore !</span><span class="en">Welcome to Le Mont-Dore!</span></span>
+    <p class="fr">Je suis ravi de vous accueillir. Tout ce qu'il faut pour votre séjour est ici : comment entrer, l'appartement, le départ et mes bonnes adresses.</p>
+    <p class="en">I'm delighted to welcome you. Everything you need is here: how to get in, the apartment, check-out and my favourite places.</p>
   </div>
 </header>
 
 <nav class="toc" aria-label="Sommaire"><div class="wrap">
-  <a href="#arrivee">Arrivée</a><a href="#cles">Boîte à clés</a><a href="#wifi">Wifi</a><a href="#logement">Logement</a><a href="#conseils">Mode d'emploi</a><a href="#regles">Règles</a><a href="#depart">Départ</a><a href="#visiter">À voir</a><a href="#pratique">Pratique</a><a href="#contact">Contact</a>
+  <a href="#arrivee"><span class="fr">Arrivée</span><span class="en">Arrival</span></a>
+  <a href="#cles"><span class="fr">Boîte à clés</span><span class="en">Key box</span></a>
+  <a href="#wifi">Wifi</a>
+  <a href="#logement"><span class="fr">Logement</span><span class="en">Apartment</span></a>
+  <a href="#conseils"><span class="fr">Mode d'emploi</span><span class="en">How-to</span></a>
+  <a href="#regles"><span class="fr">Règles</span><span class="en">Rules</span></a>
+  <a href="#depart"><span class="fr">Départ</span><span class="en">Check-out</span></a>
+  <a href="#direct"><span class="fr">En direct</span><span class="en">Live info</span></a>
+  <a href="#visiter"><span class="fr">À voir</span><span class="en">To do</span></a>
+  <a href="#restos">Restaurants</a>
+  <a href="#pratique"><span class="fr">Pratique</span><span class="en">Practical</span></a>
+  <a href="#contact">Contact</a>
 </div></nav>
 
 <main class="wrap">
 
 <section id="arrivee">
-  <span class="kicker">Se rendre à</span>
-  <h2>L'appartement</h2>
+  <span class="kicker"><span class="fr">Se rendre à</span><span class="en">Getting to</span></span>
+  <h2><span class="fr">L'appartement</span><span class="en">The apartment</span></h2>
   <div class="times">
-    <div class="time in"><span>Votre arrivée</span><strong>16h</strong><em>à partir de</em></div>
-    <div class="time out"><span>Votre départ</span><strong>12h</strong><em>au plus tard</em></div>
+    <div class="time in"><span class="fr">Votre arrivée</span><span class="en">Check-in</span><strong>16h</strong><em class="fr">à partir de</em><em class="en">from 4 pm</em></div>
+    <div class="time out"><span class="fr">Votre départ</span><span class="en">Check-out</span><strong>12h</strong><em class="fr">au plus tard</em><em class="en">by noon</em></div>
   </div>
   <div class="addr">
     <b>6 rue des Chevreuils</b>
     <span>63240 Le Mont-Dore</span>
-    <small>Résidence Soleil des Thermes · appartement n°9 · 4ᵉ et dernier étage</small>
-    <a href="https://www.google.com/maps/search/?api=1&query=6+rue+des+Chevreuils+63240+Le+Mont-Dore">Ouvrir dans Google Maps →</a>
+    <small class="fr">Résidence Soleil des Thermes · appartement n°9 · 4ᵉ et dernier étage</small>
+    <small class="en">Soleil des Thermes building · apartment no. 9 · 4th (top) floor</small>
+    <div class="row"><a class="go light" href="https://www.google.com/maps/dir/?api=1&destination=6+rue+des+Chevreuils+63240+Le+Mont-Dore"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div>
   </div>
   <div class="callout">
     <div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-    <p><b>Arrivée autonome.</b> Les codes de l'immeuble et de la boîte à clés vous sont envoyés <b>le jour J vers 15h45</b> sur la messagerie Airbnb.</p>
+    <p class="fr"><b>Arrivée autonome.</b> Les codes de l'immeuble et de la boîte à clés vous sont envoyés <b>le jour J vers 15h45</b> sur la messagerie Airbnb.</p>
+    <p class="en"><b>Self check-in.</b> The building and key box codes are sent to you <b>on arrival day around 3:45 pm</b> via Airbnb messages.</p>
   </div>
 
-  <h3>Trouver l'entrée</h3>
+  <h3><span class="fr">Trouver l'entrée</span><span class="en">Finding the entrance</span></h3>
   <div class="steps">
-    <div class="step"><figure><img src="img/rue.jpg" alt="La rue des Chevreuils, avec l'immeuble à droite" loading="lazy"><span class="n">1</span></figure>
-      <div class="txt"><b>La rue des Chevreuils</b><p>Depuis la rue Meynadier, marchez vers la place, puis prenez la rue des Chevreuils.</p></div></div>
-    <div class="step"><figure><img class="tall" src="img/porte.jpg" alt="La porte d'entrée de l'immeuble, discrète et en retrait" loading="lazy"><span class="n">2</span></figure>
-      <div class="txt"><b>La porte de l'immeuble</b><p>Sur la gauche, juste après l'angle du bâtiment : une porte discrète, en retrait. Entrez avec le code de l'immeuble.</p></div></div>
-    <div class="step"><figure><img src="img/telepherique.jpg" alt="Illustration" loading="lazy" style="aspect-ratio:16/7"><span class="n">3</span></figure>
-      <div class="txt"><b>Montez au 4ᵉ</b><p>L'ascenseur va jusqu'au 3ᵉ étage, puis il reste un étage à pied.</p></div></div>
+    <div class="step"><figure><img src="img/rue.jpg" alt="" loading="lazy"><span class="n">1</span></figure>
+      <div class="txt"><b><span class="fr">La rue des Chevreuils</span><span class="en">Rue des Chevreuils</span></b>
+      <p class="fr">Depuis la rue Meynadier, marchez vers la place, puis prenez la rue des Chevreuils.</p>
+      <p class="en">From rue Meynadier, walk towards the square, then turn into rue des Chevreuils.</p></div></div>
+    <div class="step"><figure><img class="tall" src="img/porte.jpg" alt="" loading="lazy"><span class="n">2</span></figure>
+      <div class="txt"><b><span class="fr">La porte de l'immeuble</span><span class="en">The building door</span></b>
+      <p class="fr">Sur la gauche, juste après l'angle du bâtiment : une porte discrète, en retrait. Entrez avec le code de l'immeuble.</p>
+      <p class="en">On the left, just past the corner of the building: a discreet, set-back door. Use the building code.</p></div></div>
+    <div class="step"><figure><img src="img/telepherique.jpg" alt="" loading="lazy" style="aspect-ratio:16/7"><span class="n">3</span></figure>
+      <div class="txt"><b><span class="fr">Montez au 4ᵉ</span><span class="en">Go up to the 4th floor</span></b>
+      <p class="fr">L'ascenseur va jusqu'au 3ᵉ étage, puis il reste un étage à pied.</p>
+      <p class="en">The lift goes to the 3rd floor, then one more flight on foot.</p></div></div>
   </div>
 </section>
 
 <section id="cles">
-  <span class="kicker">Mais où se trouve</span>
-  <h2>La boîte à clés ?</h2>
-  <p class="lead">Elle est sur le palier, juste en face de la porte de l'appartement.</p>
-  <div class="steps">
-    <div class="pair">
-      <div class="step"><figure><img class="tall" src="img/cle1.jpg" alt="Le couloir du 4e étage" loading="lazy"><span class="n">1</span></figure>
-        <div class="txt"><b>Le palier du 4ᵉ</b><p>Arrivé en haut, avancez sur le palier.</p></div></div>
-      <div class="step"><figure><img class="tall" src="img/cle2.jpg" alt="Le palier et la porte de l'appartement" loading="lazy"><span class="n">2</span></figure>
-        <div class="txt"><b>Face à la porte n°9</b><p>Tournez le dos à la porte de l'appartement.</p></div></div>
-      <div class="step"><figure><img class="tall" src="img/cle3.jpg" alt="Le petit local près de la fenêtre" loading="lazy"><span class="n">3</span></figure>
-        <div class="txt"><b>Le petit local</b><p>Au fond à droite, près de la fenêtre.</p></div></div>
-      <div class="step"><figure><img class="tall" src="img/cle4.jpg" alt="L'intérieur du local, la boîte à clés est à gauche" loading="lazy"><span class="n">4</span></figure>
-        <div class="txt"><b>La boîte à clés</b><p>Sur la gauche du local. Entrez le code, puis appuyez sur les deux boutons latéraux.</p></div></div>
-    </div>
+  <span class="kicker"><span class="fr">Mais où se trouve</span><span class="en">Where is</span></span>
+  <h2><span class="fr">La boîte à clés ?</span><span class="en">The key box?</span></h2>
+  <p class="lead fr">Elle est sur le palier, juste en face de la porte de l'appartement.</p>
+  <p class="lead en">It's on the landing, right opposite the apartment door.</p>
+  <div class="pair">
+    <div class="step"><figure><img class="tall" src="img/cle1.jpg" alt="" loading="lazy"><span class="n">1</span></figure>
+      <div class="txt"><b><span class="fr">Le palier du 4ᵉ</span><span class="en">4th-floor landing</span></b><p class="fr">Arrivé en haut, avancez sur le palier.</p><p class="en">At the top, walk onto the landing.</p></div></div>
+    <div class="step"><figure><img class="tall" src="img/cle2.jpg" alt="" loading="lazy"><span class="n">2</span></figure>
+      <div class="txt"><b><span class="fr">Face à la porte n°9</span><span class="en">Facing door no. 9</span></b><p class="fr">Tournez le dos à la porte de l'appartement.</p><p class="en">Turn your back to the apartment door.</p></div></div>
+    <div class="step"><figure><img class="tall" src="img/cle3.jpg" alt="" loading="lazy"><span class="n">3</span></figure>
+      <div class="txt"><b><span class="fr">Le petit local</span><span class="en">The small closet</span></b><p class="fr">Au fond à droite, près de la fenêtre.</p><p class="en">At the back on the right, by the window.</p></div></div>
+    <div class="step"><figure><img class="tall" src="img/cle4.jpg" alt="" loading="lazy"><span class="n">4</span></figure>
+      <div class="txt"><b><span class="fr">La boîte à clés</span><span class="en">The key box</span></b><p class="fr">Sur la gauche du local. Entrez le code, puis appuyez sur les deux boutons latéraux.</p><p class="en">On the left inside the closet. Enter the code, then press both side buttons.</p></div></div>
   </div>
-  <p style="margin-top:14px">Un petit message une fois installés me fait toujours plaisir 😊</p>
+  <p style="margin-top:14px"><span class="fr">Un petit message une fois installés me fait toujours plaisir 😊</span><span class="en">A quick message once you're settled in is always appreciated 😊</span></p>
 
-  <h3>Se garer</h3>
-  <p>Il y a des places tout autour de l'immeuble et quelques parkings gratuits en ville.</p>
+  <h3><span class="fr">Se garer</span><span class="en">Parking</span></h3>
+  <p class="fr">Il y a des places tout autour de l'immeuble et quelques parkings gratuits en ville.</p>
+  <p class="en">There are spaces all around the building and a few free car parks in town.</p>
   <div class="kv">
-    <div><dt>Zone payante</dt><dd>Hypercentre : place Charles-de-Gaulle, rue Meynadier, square Marcel-Bony, place de la République, parking derrière le Casino</dd></div>
-    <div><dt>Quand</dt><dd>Du 1er mai au 31 octobre, lundi–samedi, 9h–12h et 14h–18h</dd></div>
-    <div><dt>Tarifs</dt><dd><span class="num">0,90 €</span>/h · <span class="num">15 €</span>/semaine · <span class="num">35 €</span>/3 semaines · 20 min gratuites</dd></div>
-    <div><dt>Gratuit</dt><dd>Dimanches, jours fériés, et de novembre à avril</dd></div>
+    <div><dt><span class="fr">Zone payante</span><span class="en">Paid zone</span></dt><dd><span class="fr">Hypercentre : place Charles-de-Gaulle, rue Meynadier, square Marcel-Bony, place de la République, parking derrière le Casino</span><span class="en">Town centre: place Charles-de-Gaulle, rue Meynadier, square Marcel-Bony, place de la République, car park behind the Casino</span></dd></div>
+    <div><dt><span class="fr">Quand</span><span class="en">When</span></dt><dd><span class="fr">Du 1er mai au 31 octobre, lundi–samedi, 9h–12h et 14h–18h</span><span class="en">1 May to 31 October, Mon–Sat, 9 am–12 pm and 2–6 pm</span></dd></div>
+    <div><dt><span class="fr">Tarifs</span><span class="en">Prices</span></dt><dd><span class="num">0,90 €</span>/h · <span class="num">15 €</span>/<span class="fr">semaine</span><span class="en">week</span> · <span class="num">35 €</span>/<span class="fr">3 semaines</span><span class="en">3 weeks</span> · <span class="fr">20 min gratuites</span><span class="en">first 20 min free</span></dd></div>
+    <div><dt><span class="fr">Gratuit</span><span class="en">Free</span></dt><dd><span class="fr">Dimanches, jours fériés, et de novembre à avril</span><span class="en">Sundays, bank holidays, and November to April</span></dd></div>
   </div>
-  <div class="callout green">
+  <div class="callout snow">
     <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2v20M4.9 4.9l14.2 14.2M2 12h20M4.9 19.1L19.1 4.9"/></svg></div>
-    <p><b>Neige ?</b> Une pelle est à votre disposition. Si la voiture patine : dégagez les roues, coupez l'antipatinage, accélérez doucement en 2ᵉ.</p>
+    <p class="fr"><b>Neige ?</b> Une pelle est à votre disposition. Si la voiture patine : dégagez les roues, coupez l'antipatinage, accélérez doucement en 2ᵉ.</p>
+    <p class="en"><b>Snow?</b> A shovel is provided. If the car spins: clear the wheels, switch off traction control, pull away gently in 2nd gear.</p>
   </div>
 </section>
 
 <section id="wifi">
-  <span class="kicker">Connexion</span>
+  <span class="kicker"><span class="fr">Connexion</span><span class="en">Stay connected</span></span>
   <h2>Wifi</h2>
   <div class="wifi">
-    <div class="field"><span>Réseau</span><div class="copyrow"><code id="ssid">Livebox Soleil Des Thermes 9</code><button class="copy" data-copy="ssid" type="button">Copier</button></div></div>
-    <div class="field"><span>Mot de passe</span><div class="copyrow"><code id="pwd">bonjoursoleildesthermes9</code><button class="copy" data-copy="pwd" type="button">Copier</button></div></div>
+    <div class="field"><span><span class="fr">Réseau</span><span class="en">Network</span></span><div class="copyrow"><code id="ssid">Livebox Soleil Des Thermes 9</code><button class="copy" data-copy="ssid" type="button"><span class="fr">Copier</span><span class="en">Copy</span></button></div></div>
+    <div class="field"><span><span class="fr">Mot de passe</span><span class="en">Password</span></span><div class="copyrow"><code id="pwd">bonjoursoleildesthermes9</code><button class="copy" data-copy="pwd" type="button"><span class="fr">Copier</span><span class="en">Copy</span></button></div></div>
   </div>
 </section>
 
 <section id="logement">
-  <span class="kicker">Bienvenue dans</span>
-  <h2>Votre cocon</h2>
-  <div class="photo-wide"><img src="img/appart.jpg" alt="Le salon et le coin cuisine de l'appartement" loading="lazy"></div>
-  <p>28 m² au dernier étage, personne au-dessus : le calme est garanti.</p>
+  <span class="kicker"><span class="fr">Bienvenue dans</span><span class="en">Welcome to</span></span>
+  <h2><span class="fr">Votre cocon</span><span class="en">Your cosy nest</span></h2>
+  <div class="photo-wide"><img src="img/appart.jpg" alt="" loading="lazy"></div>
+  <p class="fr">28 m² au dernier étage, personne au-dessus : le calme est garanti.</p>
+  <p class="en">28 m² on the top floor, no one above you: peace and quiet guaranteed.</p>
   <div class="eq">
-    <div><h3>Cuisine</h3><ul><li>Plaques 2 feux, micro-ondes, petit four</li><li>Frigo</li><li>Cafetière filtre et Tassimo</li><li>Bouilloire, grille-pain</li><li>Vaisselle complète, verres à vin</li></ul></div>
-    <div><h3>Salon</h3><ul><li>Table extensible (2 à 4 pers.)</li><li>Canapé convertible 140×190</li><li>TV avec box Orange</li><li>Lave-linge</li></ul></div>
-    <div><h3>Chambre</h3><ul><li>Lit double 140×190</li><li>Draps, alèses, oreillers</li><li>Placards, fauteuil</li><li>Lit parapluie</li></ul></div>
-    <div><h3>Salle de bain</h3><ul><li>Douche, lavabo, WC</li><li>Sèche-serviettes</li><li>Sèche-cheveux</li><li>Réducteur de toilette</li></ul></div>
+    <div><h3><span class="fr">Cuisine</span><span class="en">Kitchen</span></h3>
+      <ul class="fr"><li>Plaques 2 feux, micro-ondes, petit four</li><li>Frigo</li><li>Cafetière filtre et Tassimo</li><li>Bouilloire, grille-pain</li><li>Vaisselle complète, verres à vin</li></ul>
+      <ul class="en"><li>2-ring hob, microwave, small oven</li><li>Fridge</li><li>Filter and Tassimo coffee makers</li><li>Kettle, toaster</li><li>Full tableware, wine glasses</li></ul></div>
+    <div><h3><span class="fr">Salon</span><span class="en">Living room</span></h3>
+      <ul class="fr"><li>Table extensible (2 à 4 pers.)</li><li>Canapé convertible 140×190</li><li>TV avec box Orange</li><li>Lave-linge</li></ul>
+      <ul class="en"><li>Extendable table (2 to 4)</li><li>Sofa bed 140×190</li><li>TV with Orange box</li><li>Washing machine</li></ul></div>
+    <div><h3><span class="fr">Chambre</span><span class="en">Bedroom</span></h3>
+      <ul class="fr"><li>Lit double 140×190</li><li>Draps, alèses, oreillers</li><li>Placards, fauteuil</li><li>Lit parapluie</li></ul>
+      <ul class="en"><li>Double bed 140×190</li><li>Sheets, mattress protectors, pillows</li><li>Wardrobes, armchair</li><li>Travel cot</li></ul></div>
+    <div><h3><span class="fr">Salle de bain</span><span class="en">Bathroom</span></h3>
+      <ul class="fr"><li>Douche, lavabo, WC</li><li>Sèche-serviettes</li><li>Sèche-cheveux</li><li>Réducteur de toilette</li></ul>
+      <ul class="en"><li>Shower, basin, toilet</li><li>Heated towel rail</li><li>Hair dryer</li><li>Child toilet seat</li></ul></div>
   </div>
   <div class="callout">
     <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h12"/></svg></div>
-    <p><b>Draps fournis</b>, le lit est à faire à l'arrivée. <b>Serviettes non fournies</b> : pensez à les apporter, avec des torchons. Aspirateur, serpillière et produits ménagers sont dans un placard de la chambre.</p>
+    <p class="fr"><b>Draps fournis</b>, le lit est à faire à l'arrivée. <b>Serviettes non fournies</b> : pensez à les apporter, avec des torchons. Aspirateur, serpillière et produits ménagers sont dans un placard de la chambre.</p>
+    <p class="en"><b>Bed linen provided</b>, please make the bed on arrival. <b>Towels not provided</b>: bring your own, plus tea towels. Vacuum, mop and cleaning products are in a bedroom cupboard.</p>
   </div>
 </section>
 
 <section id="conseils">
-  <span class="kicker">Quelques conseils</span>
-  <h2>Mode d'emploi</h2>
+  <span class="kicker"><span class="fr">Quelques conseils</span><span class="en">Handy tips</span></span>
+  <h2><span class="fr">Mode d'emploi</span><span class="en">How-to</span></h2>
   <div class="tips">
-    <div class="tip"><img src="img/radiateur.jpg" alt="" loading="lazy"><div><b>Chauffage</b><p>Le thermostat central ne marche pas : réglez chaque radiateur directement sur l'appareil.</p></div></div>
-    <div class="tip"><img src="img/tassimo.jpg" alt="" loading="lazy"><div><b>Cafetière Tassimo</b><p>Eau, disque dans la tête, bouton. Si elle refuse, nettoyez le lecteur de code-barres. <a href="https://www.youtube.com/watch?v=LZRRM8JU5X8">Tuto</a></p></div></div>
-    <div class="tip"><img src="img/canape.jpg" alt="" loading="lazy"><div><b>Canapé convertible</b><p>Tirez l'assise, prenez couette et oreillers, rabattez le dossier. <a href="https://www.youtube.com/watch?v=Q2ewuy-7Mko">Tuto</a></p></div></div>
-    <div class="tip"><img src="img/table.jpg" alt="" loading="lazy"><div><b>Table</b><p>Décollez-la du mur, dépliez le rabat. Chaises en plus dans le placard de la chambre. <a href="https://www.youtube.com/watch?v=sarwe6HO8J8">Tuto</a></p></div></div>
-    <div class="tip noimg"><div><b>Télévision</b><p>Allumez la TV (petite télécommande Samsung), puis la box (grande télécommande Orange, un peu lente). Changez de chaîne uniquement avec la télécommande Orange.</p></div></div>
-    <div class="tip"><img src="img/lavelinge.jpg" alt="" loading="lazy"><div><b>Lave-linge</b><p>Une petite machine est à votre disposition.</p></div></div>
-    <div class="tip"><img src="img/douche.jpg" alt="" loading="lazy"><div><b>Douche</b><p>L'écoulement est un peu lent depuis toujours : c'est normal.</p></div></div>
-    <div class="tip"><img src="img/poubelles.jpg" alt="" loading="lazy"><div><b>Poubelles</b><p>Pas de local dans l'immeuble : containers en ville. <a href="https://mairie-montdore.fr/fr/rb/101883/collecte-des-dechets-8">Carte des points</a></p></div></div>
+    <div class="tip"><img src="img/radiateur.jpg" alt="" loading="lazy"><div><b><span class="fr">Chauffage</span><span class="en">Heating</span></b><p class="fr">Le thermostat central ne marche pas : réglez chaque radiateur directement sur l'appareil.</p><p class="en">The central thermostat doesn't work: adjust each radiator directly.</p></div></div>
+    <div class="tip"><img src="img/tassimo.jpg" alt="" loading="lazy"><div><b><span class="fr">Cafetière Tassimo</span><span class="en">Tassimo coffee maker</span></b><p class="fr">Eau, disque dans la tête, bouton. Si elle refuse, nettoyez le lecteur de code-barres. <a href="https://www.youtube.com/watch?v=LZRRM8JU5X8">Tuto</a></p><p class="en">Water, pod in the head, press the button. If it won't start, clean the barcode reader. <a href="https://www.youtube.com/watch?v=LZRRM8JU5X8">Video</a></p></div></div>
+    <div class="tip"><img src="img/canape.jpg" alt="" loading="lazy"><div><b><span class="fr">Canapé convertible</span><span class="en">Sofa bed</span></b><p class="fr">Tirez l'assise, prenez couette et oreillers, rabattez le dossier. <a href="https://www.youtube.com/watch?v=Q2ewuy-7Mko">Tuto</a></p><p class="en">Pull out the seat, take the duvet and pillows, fold the back down. <a href="https://www.youtube.com/watch?v=Q2ewuy-7Mko">Video</a></p></div></div>
+    <div class="tip"><img src="img/table.jpg" alt="" loading="lazy"><div><b>Table</b><p class="fr">Décollez-la du mur, dépliez le rabat. Chaises en plus dans le placard de la chambre. <a href="https://www.youtube.com/watch?v=sarwe6HO8J8">Tuto</a></p><p class="en">Pull it away from the wall and unfold the leaf. Extra chairs are in the bedroom cupboard. <a href="https://www.youtube.com/watch?v=sarwe6HO8J8">Video</a></p></div></div>
+    <div class="tip noimg"><div><b><span class="fr">Télévision</span><span class="en">TV</span></b><p class="fr">Allumez la TV (petite télécommande Samsung), puis la box (grande télécommande Orange, un peu lente). Changez de chaîne uniquement avec la télécommande Orange.</p><p class="en">Turn on the TV (small Samsung remote), then the box (large Orange remote, a bit slow). Change channels with the Orange remote only.</p></div></div>
+    <div class="tip"><img src="img/lavelinge.jpg" alt="" loading="lazy"><div><b><span class="fr">Lave-linge</span><span class="en">Washing machine</span></b><p class="fr">Une petite machine est à votre disposition.</p><p class="en">A small washing machine is available.</p></div></div>
+    <div class="tip"><img src="img/douche.jpg" alt="" loading="lazy"><div><b><span class="fr">Douche</span><span class="en">Shower</span></b><p class="fr">L'écoulement est un peu lent depuis toujours : c'est normal.</p><p class="en">The drain has always been a little slow: that's normal.</p></div></div>
+    <div class="tip"><img src="img/poubelles.jpg" alt="" loading="lazy"><div><b><span class="fr">Poubelles</span><span class="en">Rubbish</span></b><p class="fr">Pas de local dans l'immeuble : containers en ville. <a href="https://mairie-montdore.fr/fr/rb/101883/collecte-des-dechets-8">Carte des points</a></p><p class="en">No bin room in the building: use the street containers. <a href="https://mairie-montdore.fr/fr/rb/101883/collecte-des-dechets-8">Map of drop-off points</a></p></div></div>
   </div>
 </section>
 
 <section id="regles">
-  <span class="kicker">Quelques</span>
-  <h2>Règles</h2>
+  <span class="kicker"><span class="fr">Quelques</span><span class="en">A few</span></span>
+  <h2><span class="fr">Règles</span><span class="en">House rules</span></h2>
   <div class="rules">
-    <div class="rule"><b>Respect</b><span>Prenez soin de l'appartement.</span></div>
-    <div class="rule"><b>Animaux</b><span>Je les adore, mais ils ne sont pas acceptés.</span></div>
-    <div class="rule"><b>Non-fumeur</b><span>Merci de ne pas fumer à l'intérieur.</span></div>
-    <div class="rule"><b>Calme</b><span>Pas de fête, peu de bruit après 22h.</span></div>
-    <div class="rule"><b>Voyageurs</b><span>Personne en plus sans me prévenir.</span></div>
-    <div class="rule"><b>Sécurité</b><span>Pas d'appareil électrique dangereux.</span></div>
+    <div class="rule"><b><span class="fr">Respect</span><span class="en">Care</span></b><span class="fr">Prenez soin de l'appartement.</span><span class="en">Please look after the apartment.</span></div>
+    <div class="rule"><b><span class="fr">Animaux</span><span class="en">Pets</span></b><span class="fr">Je les adore, mais ils ne sont pas acceptés.</span><span class="en">I love them, but they're not allowed.</span></div>
+    <div class="rule"><b><span class="fr">Non-fumeur</span><span class="en">No smoking</span></b><span class="fr">Merci de ne pas fumer à l'intérieur.</span><span class="en">Please don't smoke indoors.</span></div>
+    <div class="rule"><b><span class="fr">Calme</span><span class="en">Quiet</span></b><span class="fr">Pas de fête, peu de bruit après 22h.</span><span class="en">No parties, keep noise down after 10 pm.</span></div>
+    <div class="rule"><b><span class="fr">Voyageurs</span><span class="en">Guests</span></b><span class="fr">Personne en plus sans me prévenir.</span><span class="en">No extra guests without telling me.</span></div>
+    <div class="rule"><b><span class="fr">Sécurité</span><span class="en">Safety</span></b><span class="fr">Pas d'appareil électrique dangereux.</span><span class="en">No unsafe electrical appliances.</span></div>
   </div>
 </section>
 
 <section id="depart">
-  <span class="kicker">Avant de partir…</span>
-  <h2>Le départ</h2>
-  <p class="lead">Avant 12h, en toute autonomie. Comptez 20 à 30 minutes de ménage.</p>
-  <ul class="check">
-    <li>Vaisselle lavée et rangée</li>
-    <li>Poubelles déposées dans les containers</li>
-    <li>Frigo et placards vidés</li>
-    <li>Draps retirés et laissés au pied du lit</li>
-    <li>Table, plan de travail et évier essuyés</li>
-    <li>Sol balayé (serpillière si besoin)</li>
-    <li>Douche et lavabo rincés</li>
-    <li>Fenêtres fermées, chauffage baissé</li>
-    <li>Clés remises dans la boîte à clés</li>
+  <span class="kicker"><span class="fr">Avant de partir…</span><span class="en">Before you leave…</span></span>
+  <h2><span class="fr">Le départ</span><span class="en">Check-out</span></h2>
+  <p class="lead fr">Avant 12h, en toute autonomie. Cochez au fur et à mesure : comptez 20 à 30 minutes.</p>
+  <p class="lead en">By noon, on your own. Tick things off as you go: it takes 20–30 minutes.</p>
+  <div class="progress"><div class="bar"><i id="bar"></i></div><b id="count">0 / 9</b></div>
+  <ul class="checklist" id="checklist">
+    <li><label><input type="checkbox" id="c1"><span class="box"><svg><use href="#tick"/></svg></span><span class="lbl"><span class="fr">Vaisselle lavée et rangée</span><span class="en">Dishes washed and put away</span></span></label></li>
+    <li><label><input type="checkbox" id="c2"><span class="box"><svg><use href="#tick"/></svg></span><span class="lbl"><span class="fr">Poubelles déposées dans les containers</span><span class="en">Rubbish taken to the containers</span></span></label></li>
+    <li><label><input type="checkbox" id="c3"><span class="box"><svg><use href="#tick"/></svg></span><span class="lbl"><span class="fr">Frigo et placards vidés</span><span class="en">Fridge and cupboards emptied</span></span></label></li>
+    <li><label><input type="checkbox" id="c4"><span class="box"><svg><use href="#tick"/></svg></span><span class="lbl"><span class="fr">Draps retirés et laissés au pied du lit</span><span class="en">Sheets stripped and left at the foot of the bed</span></span></label></li>
+    <li><label><input type="checkbox" id="c5"><span class="box"><svg><use href="#tick"/></svg></span><span class="lbl"><span class="fr">Table, plan de travail et évier essuyés</span><span class="en">Table, worktop and sink wiped</span></span></label></li>
+    <li><label><input type="checkbox" id="c6"><span class="box"><svg><use href="#tick"/></svg></span><span class="lbl"><span class="fr">Sol balayé (serpillière si besoin)</span><span class="en">Floor swept (mopped if needed)</span></span></label></li>
+    <li><label><input type="checkbox" id="c7"><span class="box"><svg><use href="#tick"/></svg></span><span class="lbl"><span class="fr">Douche et lavabo rincés</span><span class="en">Shower and basin rinsed</span></span></label></li>
+    <li><label><input type="checkbox" id="c8"><span class="box"><svg><use href="#tick"/></svg></span><span class="lbl"><span class="fr">Fenêtres fermées, chauffage baissé</span><span class="en">Windows closed, heating turned down</span></span></label></li>
+    <li><label><input type="checkbox" id="c9"><span class="box"><svg><use href="#tick"/></svg></span><span class="lbl"><span class="fr">Clés remises dans la boîte à clés</span><span class="en">Keys back in the key box</span></span></label></li>
   </ul>
-  <p>Merci, ça fait vraiment la différence pour les voyageurs suivants 🙏 Et si vous avez deux minutes, un petit avis sur Airbnb me ferait très plaisir.</p>
+  <div class="done" id="done"><span class="fr">Tout est prêt, merci beaucoup ! 🙏 Bon retour, et si vous avez deux minutes, un petit avis sur Airbnb me ferait très plaisir.</span><span class="en">All done, thank you so much! 🙏 Safe travels, and if you have two minutes, a short Airbnb review would mean a lot.</span></div>
+  <button class="reset" type="button" id="reset"><span class="fr">Tout décocher</span><span class="en">Untick all</span></button>
+</section>
+
+<section id="direct">
+  <span class="kicker"><span class="fr">Avant de sortir</span><span class="en">Before heading out</span></span>
+  <h2><span class="fr">En direct</span><span class="en">Live info</span></h2>
+  <div class="live">
+    <a href="https://meteo.franceinfo.fr/previsions-meteo-france/mont-dore/63240"><span class="i"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span><b><span class="fr">Météo</span><span class="en">Weather</span></b><small><span class="fr">Prévisions du Mont-Dore</span><span class="en">Le Mont-Dore forecast</span></small></span></a>
+    <a href="https://www.sancy.com/decouvrir/toutes-les-communes/le-mont-dore/webcams/"><span class="i"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg></span><span><b>Webcams</b><small><span class="fr">Village, station, sommet</span><span class="en">Village, ski area, summit</span></small></span></a>
+    <a class="s-hiver" href="https://www.sancy.com/decouvrir/toutes-les-communes/le-mont-dore/mont-dore-station-ski-et-sports-hiver/enneigement-station-mont-dore/"><span class="i"><svg viewBox="0 0 24 24"><path d="M12 2v20M4.9 4.9l14.2 14.2M2 12h20M4.9 19.1L19.1 4.9"/></svg></span><span><b><span class="fr">Enneigement</span><span class="en">Snow report</span></b><small><span class="fr">Pistes ouvertes, neige</span><span class="en">Open runs, snow depth</span></small></span></a>
+    <a class="s-hiver" href="https://www.sancy.com/commerce-service/navette-le-mont-dore-le-sancy-le-capucin-hiver"><span class="i"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="13" rx="3"/><path d="M4 11h16M8 21l1-4M16 21l-1-4"/></svg></span><span><b><span class="fr">Navettes pistes</span><span class="en">Ski shuttle</span></b><small><span class="fr">Gratuites, horaires</span><span class="en">Free, timetable</span></small></span></a>
+    <a href="https://www.sancy.com/equipement-loisirs/telepherique-du-sancy-2"><span class="i"><svg viewBox="0 0 24 24"><path d="M3 4l18 4M12 6v4"/><rect x="7" y="10" width="10" height="9" rx="2"/></svg></span><span><b><span class="fr">Téléphérique</span><span class="en">Cable car</span></b><small><span class="fr">Ouverture et tarifs</span><span class="en">Opening and prices</span></small></span></a>
+    <a href="https://www.sancy.com"><span class="i"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></span><span><b><span class="fr">Office de tourisme</span><span class="en">Tourist office</span></b><small><span class="fr">Agenda et activités</span><span class="en">Events and activities</span></small></span></a>
+  </div>
 </section>
 
 <section id="visiter">
-  <span class="kicker">À faire, à voir</span>
-  <h2>Visites</h2>
-  <p class="lead">Tout part à pied du village. Les pistes sont à 2 km, avec des navettes gratuites toute la journée (appli Zenbus).</p>
-  <div class="cards">
-    <div class="card"><img src="img/sancy.jpg" alt="Le sommet du Puy de Sancy au coucher du soleil" loading="lazy"><div><b>Le Puy de Sancy</b><p>Téléphérique depuis le Mont-Dore, puis 15–20 min à pied jusqu'au sommet à 1 886 m.</p></div></div>
-    <div class="card"><img src="img/funi.jpg" alt="Le funiculaire du Capucin" loading="lazy"><div><b>Le funiculaire du Capucin</b><p>Jusqu'au Salon du Capucin à 1 300 m : vue sur la vallée et départ de randonnées.</p></div></div>
-    <div class="card"><img src="img/cascade.jpg" alt="La Grande Cascade" loading="lazy"><div><b>La Grande Cascade</b><p>Une rando simple et très agréable depuis la ville, même pour les petites jambes.</p></div></div>
-    <div class="card"><img src="img/ski.jpg" alt="La station de ski du Sancy" loading="lazy"><div><b>La station du Sancy</b><p>Ski, fond, raquettes et chiens de traîneau l'hiver ; VTT et trail l'été.</p></div></div>
-    <div class="card"><img src="img/thermes.jpg" alt="Le hall des Thermes" loading="lazy"><div><b>Les Thermes</b><p>Un édifice néo-byzantin superbe : mosaïques, fresques, eaux volcaniques.</p></div></div>
-    <div class="card"><img src="img/lac.jpg" alt="Un lac volcanique entouré de forêt" loading="lazy"><div><b>Les lacs</b><p>Chambon (plage, paddle), Guéry (sauvage, à 1 200 m) et Pavin, à quelques minutes.</p></div></div>
-    <div class="card"><img src="img/murol.jpg" alt="Le château de Murol" loading="lazy"><div><b>Le château de Murol</b><p>Château médiéval qui domine la vallée, animations en saison.</p></div></div>
-    <div class="card"><img src="img/cascade-illu.jpg" alt="Illustration d'une cascade" loading="lazy" style="object-position:center 40%"><div><b>Randonnées</b><p>Applis Sancy Explorer et <a href="https://www.visorando.com">Visorando</a>, et le <a href="https://www.facebook.com/groups/410291064059895">groupe Facebook</a> des voyageurs.</p></div></div>
+  <span class="kicker"><span class="fr">À faire, à voir</span><span class="en">Things to do</span></span>
+  <h2><span class="fr">Selon la saison</span><span class="en">By season</span></h2>
+  <div class="seasons" role="group" aria-label="Saison">
+    <button type="button" data-season="hiver"><span class="fr">❄️ Hiver</span><span class="en">❄️ Winter</span></button>
+    <button type="button" data-season="ete"><span class="fr">🌿 Belle saison</span><span class="en">🌿 Spring–Autumn</span></button>
   </div>
-  <h3>Mes restaurants préférés</h3>
-  <p>Réservez quelques jours avant. En novembre, beaucoup ferment.</p>
-  <div class="kv">
-    <div><dt>L'Estavou</dt><dd class="num">04 73 65 01 97</dd></div>
-    <div><dt>Chez Pépé Jean</dt><dd class="num">04 73 22 16 44</dd></div>
-    <div><dt>Les Fées Mères</dt><dd class="num">04 73 21 52 33</dd></div>
-    <div><dt>Auberge de la Golmotte</dt><dd class="num">04 73 65 05 77</dd></div>
-    <div><dt>La Ferme de l'Angle</dt><dd class="num">04 73 65 02 11</dd></div>
+
+  <!-- HIVER -->
+  <div class="s-hiver">
+    <div class="callout snow">
+      <div class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="13" rx="3"/><path d="M4 11h16M8 21l1-4M16 21l-1-4"/></svg></div>
+      <p class="fr"><b>Les pistes sont à 2 km du village.</b> Des navettes gratuites partent du centre (arrêts rue Meynadier et La Poste) quand les pistes sont ouvertes : tous les jours pendant les vacances, sinon le week-end. Pour la saison 2026-2027 : du 19 décembre au 22 mars. Elles sont réservées aux skieurs.</p>
+      <p class="en"><b>The slopes are 2 km from the village.</b> Free shuttles leave from the centre (stops on rue Meynadier and at the Post Office) when the slopes are open: daily during school holidays, otherwise at weekends. 2026-27 season: 19 December to 22 March. Skiers only.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><img src="img/ski.jpg" alt="" loading="lazy"><div><b><span class="fr">La station du Sancy</span><span class="en">Sancy ski area</span></b><p class="fr">Ski alpin, snowboard, luge : la plus grande station du Massif central. Location de matériel au village et au pied des pistes.</p><p class="en">Downhill skiing, snowboarding, sledging: the largest ski area in the Massif Central. Equipment hire in the village and at the bottom of the slopes.</p><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Station+du+Mont-Dore+Sancy"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+      <div class="card"><img src="img/sancy.jpg" alt="" loading="lazy"><div><b><span class="fr">Le Puy de Sancy</span><span class="en">Puy de Sancy</span></b><p class="fr">Le téléphérique rouvre le 19 décembre 2026 (tous les jours 9h–17h15). Vue magique sur les volcans enneigés.</p><p class="en">The cable car reopens on 19 December 2026 (daily 9 am–5:15 pm). Magical views over snowy volcanoes.</p><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=T%C3%A9l%C3%A9ph%C3%A9rique+du+Sancy"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+      <div class="card"><img src="img/funi.jpg" alt="" loading="lazy"><div><b><span class="fr">Raquettes et ski de fond</span><span class="en">Snowshoes & cross-country</span></b><p class="fr">Des itinéraires balisés partent autour du village et de la station. Plans et location de raquettes : office de tourisme et loueurs du village.</p><p class="en">Marked trails start around the village and the ski area. Maps and snowshoe hire: tourist office and village shops.</p><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Office+de+tourisme+Le+Mont-Dore"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+      <div class="card"><img src="img/thermes.jpg" alt="" loading="lazy"><div><b><span class="fr">Au chaud, au village</span><span class="en">Indoors, in the village</span></b><p class="fr">Les Thermes néo-byzantins, la patinoire, le bowling, le cinéma, et une truffade au retour des pistes.</p><p class="en">The neo-Byzantine spa building, ice rink, bowling, cinema, and a truffade after a day on the slopes.</p><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Thermes+du+Mont-Dore"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+    </div>
+    <div class="callout green">
+      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <p class="fr"><b>Sur la route :</b> pneus neige ou chaînes conseillés de novembre à mars (obligatoires dans le Puy-de-Dôme en hiver).</p>
+      <p class="en"><b>On the road:</b> winter tyres or snow chains are recommended from November to March (mandatory in the Puy-de-Dôme in winter).</p>
+    </div>
   </div>
-  <div class="band"><img src="img/lac-illu.jpg" alt="Illustration du lac Pavin" loading="lazy"><p>Le lac Pavin, à 25 minutes : le plus beau lac volcanique d'Auvergne.</p></div>
+
+  <!-- BELLE SAISON -->
+  <div class="s-ete">
+    <p class="fr">Tout part à pied du village.</p><p class="en">Everything starts on foot from the village.</p>
+    <div class="callout">
+      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div>
+      <p class="fr"><b>Automne 2026 :</b> le téléphérique du Sancy est fermé pour travaux jusqu'au 18 décembre. On peut monter au sommet à pied (environ 2 h depuis la station).</p>
+      <p class="en"><b>Autumn 2026:</b> the Sancy cable car is closed for maintenance until 18 December. You can hike to the summit (about 2 hours from the ski area).</p>
+    </div>
+    <div class="cards">
+      <div class="card"><img src="img/sancy.jpg" alt="" loading="lazy"><div><b><span class="fr">Le Puy de Sancy</span><span class="en">Puy de Sancy</span></b><p class="fr">Le point culminant du Massif central (1 886 m). En téléphérique puis 15–20 min à pied, ou en randonnée.</p><p class="en">The highest point in central France (1,886 m). By cable car then a 15–20 min walk, or as a hike.</p><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=T%C3%A9l%C3%A9ph%C3%A9rique+du+Sancy"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+      <div class="card"><img src="img/cascade.jpg" alt="" loading="lazy"><div><b><span class="fr">La Grande Cascade</span><span class="en">The Grande Cascade</span></b><p class="fr">Une rando simple et très agréable depuis la ville, même pour les petites jambes.</p><p class="en">An easy, lovely walk from town, even for little legs.</p><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Grande+Cascade+Le+Mont-Dore&travelmode=walking"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+      <div class="card"><img src="img/funi.jpg" alt="" loading="lazy"><div><b><span class="fr">Le funiculaire du Capucin</span><span class="en">Capucin funicular</span></b><p class="fr">Le plus ancien funiculaire électrique de France vous monte à 1 300 m : vue sur la vallée et départ de randonnées.</p><p class="en">France's oldest electric funicular takes you up to 1,300 m: valley views and hiking trails.</p><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Funiculaire+du+Capucin+Le+Mont-Dore&travelmode=walking"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+      <div class="card"><img src="img/lac.jpg" alt="" loading="lazy"><div><b><span class="fr">Les lacs</span><span class="en">The lakes</span></b><p class="fr">Chambon (plage, paddle), Guéry (sauvage, à 1 200 m) et Pavin, à quelques minutes en voiture.</p><p class="en">Chambon (beach, paddleboarding), Guéry (wild, at 1,200 m) and Pavin, a short drive away.</p><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Lac+Chambon"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+      <div class="card"><img src="img/thermes.jpg" alt="" loading="lazy"><div><b><span class="fr">Les Thermes</span><span class="en">The spa building</span></b><p class="fr">Un édifice néo-byzantin superbe : mosaïques, fresques, eaux volcaniques.</p><p class="en">A stunning neo-Byzantine building: mosaics, frescoes, volcanic waters.</p><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Thermes+du+Mont-Dore&travelmode=walking"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+      <div class="card"><img src="img/murol.jpg" alt="" loading="lazy"><div><b><span class="fr">Le château de Murol</span><span class="en">Murol castle</span></b><p class="fr">Château médiéval qui domine la vallée, animations en saison.</p><p class="en">A medieval castle overlooking the valley, with shows in season.</p><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Ch%C3%A2teau+de+Murol"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+    </div>
+    <p style="margin-top:16px"><span class="fr">Applis rando :</span><span class="en">Hiking apps:</span> <b>Sancy Explorer</b>, <a href="https://www.visorando.com">Visorando</a>. <span class="fr">Et le</span><span class="en">And the</span> <a href="https://www.facebook.com/groups/410291064059895"><span class="fr">groupe Facebook des voyageurs</span><span class="en">guests' Facebook group</span></a>.</p>
+    <div class="band"><img src="img/lac-illu.jpg" alt="" loading="lazy"><p class="fr">Le lac Pavin, à 25 minutes : le plus beau lac volcanique d'Auvergne.</p><p class="en">Lac Pavin, 25 minutes away: Auvergne's most beautiful volcanic lake.</p></div>
+  </div>
+</section>
+
+<section id="restos">
+  <span class="kicker"><span class="fr">Mes bonnes tables</span><span class="en">Where I like to eat</span></span>
+  <h2>Restaurants</h2>
+  <p class="lead fr">Réservez toujours quelques jours avant. En novembre et début décembre, beaucoup d'établissements ferment.</p>
+  <p class="lead en">Always book a few days ahead. In November and early December, many places close.</p>
+  <div class="restos">
+    <div class="resto"><div class="top"><b>L'Estavou</b><span class="where"><span class="fr">Mont-Dore, centre</span><span class="en">Mont-Dore, centre</span></span></div>
+      <p class="fr">Truffade à l'ancienne, saint-nectairade, spécialités auvergnates.</p><p class="en">Old-style truffade, saint-nectairade, Auvergne specialities.</p>
+      <span class="closed"><span class="fr">Fermé lundi et mardi</span><span class="en">Closed Mon and Tue</span></span>
+      <div class="row"><span class="tel">04 73 65 01 97</span><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=L%27Estavou+1+avenue+Michel+Bertrand+63240+Le+Mont-Dore&travelmode=walking"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+    <div class="resto"><div class="top"><b>Chez Pépé Jean</b><span class="where"><span class="fr">Mont-Dore, place Charles-de-Gaulle</span><span class="en">Mont-Dore, place Charles-de-Gaulle</span></span></div>
+      <p class="fr">Bistrot auvergnat au cœur du village.</p><p class="en">Auvergne bistro in the heart of the village.</p>
+      <span class="closed"><span class="fr">Horaires variables : appelez avant</span><span class="en">Opening hours vary: call ahead</span></span>
+      <div class="row"><span class="tel">04 73 22 16 44</span><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Chez+P%C3%A9p%C3%A9+Jean+3+place+Charles+de+Gaulle+63240+Le+Mont-Dore&travelmode=walking"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a></div></div>
+    <div class="resto"><div class="top"><b>Auberge de la Golmotte</b><span class="where"><span class="fr">Le Barbier, 5 min en voiture</span><span class="en">Le Barbier, 5 min drive</span></span></div>
+      <p class="fr">Cuisine traditionnelle, tout fait maison.</p><p class="en">Traditional, all home-made cooking.</p>
+      <span class="closed"><span class="fr">Ouvert jeudi–samedi midi et soir, dimanche midi · fermé du 7 au 18 décembre</span><span class="en">Open Thu–Sat lunch and dinner, Sun lunch · closed 7–18 December</span></span>
+      <div class="row"><span class="tel">04 73 65 05 77</span><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Auberge+de+la+Golmotte+Le+Mont-Dore"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a><a href="http://www.aubergelagolmotte.com"><span class="fr">Site</span><span class="en">Website</span></a></div></div>
+    <div class="resto"><div class="top"><b>La Ferme de l'Angle</b><span class="where"><span class="fr">Route de l'Angle, 5 min en voiture</span><span class="en">Route de l'Angle, 5 min drive</span></span></div>
+      <p class="fr">Menu unique du jour à la ferme : potée (lundi, jeudi), truffade (mercredi, week-end), goûter et crêpes. Réservation obligatoire.</p><p class="en">One set menu a day at the farm: potée (Mon, Thu), truffade (Wed, weekends), afternoon tea and crêpes. Booking required.</p>
+      <span class="closed"><span class="fr">12h–17h30, fermé mardi et vendredi · fermé du 2 novembre au 19 décembre</span><span class="en">12 pm–5:30 pm, closed Tue and Fri · closed 2 November to 19 December</span></span>
+      <div class="row"><span class="tel">04 73 65 02 11</span><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=La+Ferme+de+l%27Angle+287+route+de+l%27Angle+63240+Le+Mont-Dore"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a><a href="https://www.fermedelangle.fr"><span class="fr">Site</span><span class="en">Website</span></a></div></div>
+    <div class="resto"><div class="top"><b>Les Fées Mères</b><span class="where"><span class="fr">La Bourboule, 10 min en voiture</span><span class="en">La Bourboule, 10 min drive</span></span></div>
+      <p class="fr">Cuisine de saison et produits locaux, sans carte fixe. Le chef est Toque d'Auvergne.</p><p class="en">Seasonal cooking with local produce, no fixed menu. The chef is a Toque d'Auvergne.</p>
+      <span class="closed"><span class="fr">Fermé mardi et mercredi (hors été) · peu de services le soir</span><span class="en">Closed Tue and Wed (outside summer) · few evening services</span></span>
+      <div class="row"><span class="tel">04 73 21 52 33</span><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=Les+F%C3%A9es+M%C3%A8res+5960+route+de+Saint-Sauves+63150+La+Bourboule"><svg><use href="#pin"/></svg><span class="fr">Itinéraire</span><span class="en">Directions</span></a><a href="https://www.restaurantlesfeesmeres.fr/"><span class="fr">Site</span><span class="en">Website</span></a></div></div>
+  </div>
+  <p class="note-small" style="margin-top:12px"><span class="fr">Horaires relevés en octobre 2026, ils peuvent changer : un coup de fil avant est toujours plus sûr.</span><span class="en">Hours checked in October 2026 and may change: a quick call ahead is always safer.</span></p>
 </section>
 
 <section id="pratique">
-  <span class="kicker">Bon à savoir</span>
-  <h2>Infos pratiques</h2>
-  <h3>Courses</h3>
+  <span class="kicker"><span class="fr">Bon à savoir</span><span class="en">Good to know</span></span>
+  <h2><span class="fr">Infos pratiques</span><span class="en">Practical info</span></h2>
+  <h3><span class="fr">Courses</span><span class="en">Shopping</span></h3>
   <div class="kv">
-    <div><dt>Supermarchés</dt><dd>Petit Casino (place du Marché) · SPAR (rue du Capitaine-Chazotte) · CocciMarket (av. de la Gare)</dd></div>
-    <div><dt>Boulangerie</dt><dd>Le Moulin de l'Écureuil, 3 place du Panthéon</dd></div>
-    <div><dt>Fromageries</dt><dd>Fromagerie du Bougnat (4 rue Montlosier) · Subirana (19 rue des Déportés) · Renommée du Bon Saint-Nectaire (3 rue M.-Sauvagnat)</dd></div>
-    <div><dt>Boucheries</dt><dd>Boucherie du Mont-Dore (9 pl. de la République) · Boucherie du Sancy (6 rue Favart)</dd></div>
-    <div><dt>Carburant</dt><dd>Auchan La Bourboule · Intermarché Murat-le-Quaire</dd></div>
+    <div><dt><span class="fr">Supermarchés</span><span class="en">Supermarkets</span></dt><dd>Petit Casino (place du Marché) · SPAR (rue du Capitaine-Chazotte) · CocciMarket (av. de la Gare)</dd></div>
+    <div><dt><span class="fr">Boulangerie</span><span class="en">Bakery</span></dt><dd>Le Moulin de l'Écureuil, 3 place du Panthéon</dd></div>
+    <div><dt><span class="fr">Fromageries</span><span class="en">Cheese shops</span></dt><dd>Fromagerie du Bougnat (4 rue Montlosier) · Subirana (19 rue des Déportés) · Renommée du Bon Saint-Nectaire (3 rue M.-Sauvagnat)</dd></div>
+    <div><dt><span class="fr">Boucheries</span><span class="en">Butchers</span></dt><dd>Boucherie du Mont-Dore (9 pl. de la République) · Boucherie du Sancy (6 rue Favart)</dd></div>
+    <div><dt><span class="fr">Carburant</span><span class="en">Fuel</span></dt><dd>Auchan La Bourboule · Intermarché Murat-le-Quaire</dd></div>
   </div>
-  <h3>Santé et services</h3>
+  <h3><span class="fr">Santé et services</span><span class="en">Health & services</span></h3>
   <div class="kv">
-    <div><dt>Pharmacie</dt><dd>1 place Charles-de-Gaulle · <span class="num">04 73 65 02 86</span></dd></div>
-    <div><dt>Médecin</dt><dd>Dr Vigier, 4 rue Rigny · <span class="num">04 73 65 08 72</span></dd></div>
-    <div><dt>Hôpital</dt><dd>2 rue du Capitaine-Chazotte · <span class="num">04 73 65 33 33</span></dd></div>
-    <div><dt>Office de tourisme</dt><dd>Av. de la Libération · <span class="num">04 73 65 20 21</span> · <a href="https://www.sancy.com">sancy.com</a></dd></div>
-    <div><dt>Urgences</dt><dd>SAMU <span class="num">15</span> · Pompiers <span class="num">18</span> · Police <span class="num">17</span> · Antipoison <span class="num">04 72 11 69 11</span></dd></div>
+    <div><dt><span class="fr">Pharmacie</span><span class="en">Pharmacy</span></dt><dd>1 place Charles-de-Gaulle · <span class="num">04 73 65 02 86</span></dd></div>
+    <div><dt><span class="fr">Médecin</span><span class="en">Doctor</span></dt><dd>Dr Vigier, 4 rue Rigny · <span class="num">04 73 65 08 72</span></dd></div>
+    <div><dt><span class="fr">Hôpital</span><span class="en">Hospital</span></dt><dd>2 rue du Capitaine-Chazotte · <span class="num">04 73 65 33 33</span></dd></div>
+    <div><dt><span class="fr">Office de tourisme</span><span class="en">Tourist office</span></dt><dd><span class="fr">Av. de la Libération</span><span class="en">Avenue de la Libération</span> · <span class="num">04 73 65 20 21</span> · <a href="https://www.sancy.com">sancy.com</a></dd></div>
+    <div><dt><span class="fr">Urgences</span><span class="en">Emergencies</span></dt><dd><span class="fr">SAMU</span><span class="en">Ambulance</span> <span class="num">15</span> · <span class="fr">Pompiers</span><span class="en">Fire</span> <span class="num">18</span> · <span class="fr">Police</span><span class="en">Police</span> <span class="num">17</span> · <span class="fr">Europe</span><span class="en">EU emergency</span> <span class="num">112</span></dd></div>
   </div>
 </section>
 
 <section id="contact">
   <div class="contact">
-    <img src="img/florian.jpg" alt="Florian, votre hôte">
+    <img src="img/florian.jpg" alt="Florian">
     <div>
-      <span class="kicker" style="color:var(--pine-deep)">Une question ?</span>
-      <h2>Je suis là</h2>
-      <p>Écrivez-moi sur la messagerie Airbnb ou par SMS :</p>
-      <div class="copyrow"><code id="tel">06 44 23 37 30</code><button class="copy" data-copy="tel" type="button">Copier</button></div>
-      <p style="margin-top:10px;font-size:14px">Urgence et je ne réponds pas : Sylvie, qui s'occupe de l'appartement, au <span class="num">06 11 88 05 30</span>.</p>
+      <span class="kicker" style="color:var(--pine-deep)"><span class="fr">Une question ?</span><span class="en">Any questions?</span></span>
+      <h2><span class="fr">Je suis là</span><span class="en">I'm here</span></h2>
+      <p class="fr">Écrivez-moi sur la messagerie Airbnb ou par SMS :</p>
+      <p class="en">Message me on Airbnb or by text:</p>
+      <div class="copyrow"><code id="tel">06 44 23 37 30</code><button class="copy" data-copy="tel" type="button"><span class="fr">Copier</span><span class="en">Copy</span></button></div>
+      <p style="margin-top:10px;font-size:14px"><span class="fr">Urgence et je ne réponds pas : Sylvie, qui s'occupe de l'appartement, au</span><span class="en">Emergency and I don't answer: Sylvie, who looks after the apartment, on</span> <span class="num">06 11 88 05 30</span>.</p>
     </div>
   </div>
 </section>
 
-<footer><div class="script">Bon séjour au Mont-Dore !</div><div>Florian</div></footer>
+<footer><div class="script"><span class="fr">Bon séjour au Mont-Dore !</span><span class="en">Enjoy your stay!</span></div><div>Florian</div></footer>
 </main>
 
 <script>
-document.querySelectorAll('button.copy').forEach(function(btn){
-  btn.addEventListener('click',function(){
-    var el=document.getElementById(btn.dataset.copy); var txt=el.textContent.trim();
-    var reset=function(t){btn.textContent=t;setTimeout(function(){btn.textContent='Copier'},1600)};
-    var fallback=function(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);reset('Sélectionné')};
-    try{navigator.clipboard.writeText(txt).then(function(){reset('Copié')},fallback)}catch(e){fallback()}
+(function(){
+  var d=document.documentElement;
+  function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  // Langue
+  document.querySelectorAll('[data-lang]').forEach(function(b){b.addEventListener('click',function(){
+    var l=b.dataset.lang; d.classList.remove('lang-fr','lang-en'); d.classList.add('lang-'+l); d.lang=l; store('lang',l);
+  })});
+  // Saison
+  document.querySelectorAll('[data-season]').forEach(function(b){b.addEventListener('click',function(){
+    var s=b.dataset.season; d.classList.remove('season-hiver','season-ete'); d.classList.add('season-'+s); store('season',s);
+  })});
+  // Copier
+  document.querySelectorAll('button.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var el=document.getElementById(btn.dataset.copy), txt=el.textContent.trim(), orig=btn.innerHTML;
+      var flash=function(fr,en){btn.innerHTML='<span class="fr">'+fr+'</span><span class="en">'+en+'</span>';setTimeout(function(){btn.innerHTML=orig},1600)};
+      var fallback=function(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);flash('Sélectionné','Selected')};
+      try{navigator.clipboard.writeText(txt).then(function(){flash('Copié','Copied')},fallback)}catch(e){fallback()}
+    });
   });
-});
+  // Check-list
+  var boxes=[].slice.call(document.querySelectorAll('#checklist input'));
+  var saved={}; try{saved=JSON.parse(get('checklist')||'{}')}catch(e){}
+  function update(){var n=boxes.filter(function(b){return b.checked}).length;
+    document.getElementById('count').textContent=n+' / '+boxes.length;
+    document.getElementById('bar').style.width=(100*n/boxes.length)+'%';
+    document.getElementById('done').classList.toggle('show',n===boxes.length);
+    var o={}; boxes.forEach(function(b){o[b.id]=b.checked}); store('checklist',JSON.stringify(o));}
+  boxes.forEach(function(b){b.checked=!!saved[b.id]; b.addEventListener('change',update)});
+  document.getElementById('reset').addEventListener('click',function(){boxes.forEach(function(b){b.checked=false});update()});
+  update();
+})();
 </script>
 </body>
 </html>
